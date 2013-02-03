@@ -1,22 +1,27 @@
-"""
-This script provides a GUI front-end for the Archiver module.
-"""
+"""This script provides a GUI front-end for the Archiver utility."""
 
 ##==============================================================#
-## COPYRIGHT 2012, REVISED 2012, Jeff Rimko.                    #
+## COPYRIGHT 2012, REVISED 2013, Jeff Rimko.                    #
 ##==============================================================#
 
 ##==============================================================#
 ## SECTION: Imports                                             #
 ##==============================================================#
 
-import os
-import sys
+import os, sys
 from time import sleep
 
 import wx
 
+import archiver
 from archiver import create_archive
+
+##==============================================================#
+## SECTION: Global Definitions                                  #
+##==============================================================#
+
+# The app name.
+APPNAME = "gArchiver"
 
 ##==============================================================#
 ## SECTION: Class Definitions                                   #
@@ -131,5 +136,5 @@ class MainWindow(wx.Frame):
 if __name__ == "__main__":
     if len(sys.argv) >= 2:
         app = wx.App(False)
-        frame = MainWindow(None, "Archiver")
+        frame = MainWindow(None, "%s %s" % (APPNAME, archiver.__version__))
         app.MainLoop()

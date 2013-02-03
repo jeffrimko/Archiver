@@ -1,36 +1,58 @@
-"""
-This script contains a library for creating a file archive. An archive is simply a zip file containing a log file plus
+"""This script contains a library for creating a file archive.
+An archive is simply a zip file containing a log file plus
 any additional files to archive.
 
-The standard used for the log file is a text file that has the same name as the parent zip file. The log is always in
-the root directory of the archive. For example, given a archive zip file named "myArchive.zip", the log file will be
-located at "/myArchive.txt" within the zip file.
+The standard used for the log file is a text file named
+'__archive_info__.txt'. The log is always in the root
+directory of the archive.
 """
 
 ##==============================================================#
-## COPYRIGHT 2012, REVISED 2012, Jeff Rimko.                    #
+## COPYRIGHT 2012, REVISED 2013, Jeff Rimko.                    #
 ##==============================================================#
 
 ##==============================================================#
 ## SECTION: Imports                                             #
 ##==============================================================#
 
-import os
-import shutil
-import sys
-import time
+import os, shutil, sys, time
 from zipfile import ZipFile, ZIP_DEFLATED
+
+##==============================================================#
+## SECTION: Global Definitions                                  #
+##==============================================================#
+
+# The version of the utility.
+__version__ = "1.0.0"
+
+# The app usage info.
+USAGE = """\
+A utility for archiving files.
+
+Usage:
+  archiver FILE...
+  archiver --help | -h
+  archiver --version
+
+Arguments:
+  FILE  A file to include in the archive.
+
+Options:
+  -h --help  Show this help message and exit.
+  --version  Show version and exit."""
 
 ##==============================================================#
 ## SECTION: Function Definitions                                #
 ##==============================================================#
 
 def _get_base_files(root_dir, base_targets):
-    """Returns an expanded list of files starting from the root directory.
+    """Returns an expanded list of files starting from the root
+    directory.
 
     Parameters:
      - root_dir - The absolute path of the root directory.
-     - base_targets - A list of files or folders that exist in the root directory. Directories will be expanded.
+     - base_targets - A list of files or folders that exist in
+       the root directory. Directories will be expanded.
     """
     files = []
     for target in base_targets:
@@ -43,18 +65,21 @@ def _get_base_files(root_dir, base_targets):
     return files
 
 def create_archive(targets, log_text, name="", add_timestamp=True, del_originals=False, precise_time=True):
-    """This function creates a new archive zip file. The archive file will be placed in the parent directory that
-    is common to all target files.
+    """This function creates a new archive zip file. The archive file
+    will be placed in the parent directory that is common to all target
+    files.
 
-    By default, the zip file will take the name of the first argument plus a time-stamp. For example, running the script
-    using "python archiver.py  my_fileA.txt  my_fileB.doc" on January 2, 2010 at 1:30pm will result in a zip archive
-    named" 2010-01-02_1330 - my_fileA.zip".
+    By default, the zip file will take the name of the first argument
+    plus a time-stamp. For example, running the script using
+    `python archiver.py  my_fileA.txt  my_fileB.doc` on 2 January 2010
+    at 1:30pm will result in a zip archive named
+    '201001021330-my_fileA.zip'.
 
     Parameters:
      - targets - Paths to the files and folders to add to the archive.
      - log_text - The text that will be written to the archive log.
      - name - The name of the archive. If an empty string, the default name will be used.
-     - add_timestamp - True if a the timestamp should be added to the archive name.
+     - add_timestamp - True if a timestamp should be added to the archive name.
      - del_originals - True if the original files should be deleted after archiving.
      - precise_time - True if the timestamp should include time down to the second, otherwise to the day.
     """
@@ -64,7 +89,6 @@ def create_archive(targets, log_text, name="", add_timestamp=True, del_originals
         # Get the current time-stamp to be applied to the archive and the log.
         if precise_time:
             archive_time_stamp = time.strftime("%Y%m%d%H%M")
-            #log_time_stamp = time.strftime("%d %B %Y, %I:%M%p (%Z)")
             log_time_stamp = time.strftime("%d %B %Y, ")
             log_time_stamp += ("%s") % (time.strftime("%I:%M%p (%Z)")).lstrip('0')
         else:
@@ -74,8 +98,8 @@ def create_archive(targets, log_text, name="", add_timestamp=True, del_originals
         # Get the archive root directory.
         dir = os.path.dirname(targets[0])
 
-        # If the archive name has not been explicitly defined, generate one from the first target file name and the
-        # current timestamp.
+        # If the archive name has not been explicitly defined, generate one from the
+        # first target file name and the current timestamp.
         if not name:
             archive_name = os.path.splitext(os.path.basename(targets[0]))[0]
         else:
@@ -83,12 +107,6 @@ def create_archive(targets, log_text, name="", add_timestamp=True, del_originals
 
         # Determine the path of the log file for creation.
         log_name = "__archive_info__.txt"
-        # TEMP: Remove the following if keeping the `__archive_info__` log name.
-        #{{{
-        # log_name = archive_name + ".txt"
-        # if add_timestamp:
-        #     log_name = archive_time_stamp + " - " + log_name
-        #}}}
         log_path = os.path.join(dir, log_name)
 
         # If a file exists that would conflict in name with the log, the log file is not created.
@@ -154,5 +172,16 @@ def create_archive(targets, log_text, name="", add_timestamp=True, del_originals
 
 if __name__ == "__main__":
     if len(sys.argv) > 1:
+        if "--version" == sys.argv[1]:
+            print "archiver %s" % (__version__)
+            sys.exit()
+        elif "--help" == sys.argv[1]:
+            print USAGE
+            sys.exit()
+        elif "-h" == sys.argv[1]:
+            print USAGE
+            sys.exit()
         log_text = raw_input("Enter log contents: ")
         create_archive(sys.argv[1:], log_text)
+    else:
+        print USAGE

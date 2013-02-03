@@ -1,5 +1,6 @@
-:: Fixme
-:: __Dependencies__: Fixme
+:: Builds a Windows EXE from the Python scripts.
+:: __Dependencies__:
+:: PyInstaller must have a wrapper batch file on the PATH.
 
 ::=============================================================::
 :: COPYRIGHT 2013, REVISED 2013, Jeff Rimko.                   ::
@@ -10,9 +11,18 @@
 @cd /d %~dp0 && echo off && title %TITLE%
 
 ::=============================================================::
+:: SECTION: Global Definitions                                 ::
+::=============================================================::
+
+:: Output directory for build.
+set OUTDIR=__output__
+
+::=============================================================::
 :: SECTION: Main Body                                          ::
 ::=============================================================::
 
-call pyinstaller --out=__output__ --onefile --windowed gui.pyw
+mkdir %OUTDIR%
+call pyinstaller --out=%OUTDIR% --name=archiver --onefile --console archiver.py
+call pyinstaller --out=%OUTDIR% --name=garchiver --onefile --windowed gui.pyw
 pause
 exit /b 0
