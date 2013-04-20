@@ -157,9 +157,14 @@ def create_archive(udata):
         else:
             name = "%s-%s" % (time.strftime("%Y%m%d%H%M"), name)
 
+    # Finalize archive path.
+    arcpath = name
+    if udata['outdir']:
+        arcpath = os.path.join(udata['outdir'], name)
+
     # Check that file with same name doesn't already exist.
-    if os.path.isfile(name):
-        sys.exit("ERROR: Archive named '%s' already exists!" % (name))
+    if os.path.isfile(arcpath):
+        sys.exit("ERROR: Archive named '%s' already exists!" % (arcpath))
 
     # Create temporary directory.
     tmpdir = tempfile.mkdtemp()
@@ -174,7 +179,7 @@ def create_archive(udata):
         top_files.append(logpath)
 
     # Create archive and zip targets.
-    zip_targets(name, udata['targets'], top_files, udata['flatten'], udata['delete'])
+    zip_targets(arcpath, udata['targets'], top_files, udata['flatten'], udata['delete'])
 
     # Remove temporary directory.
     shutil.rmtree(tmpdir)
@@ -225,6 +230,7 @@ def parse_args(args):
     udata['no_ts'] = args['--no_timestamp']
     udata['delete'] = args['--delete']
     udata['flatten'] = args['--flatten']
+    udata['outdir'] = args['--outdir']
     return udata
 
 def main():

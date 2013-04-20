@@ -8,7 +8,8 @@
 ## SECTION: Imports                                             #
 ##==============================================================#
 
-import os, sys
+import os
+import sys
 from time import sleep
 
 import wx
@@ -92,6 +93,12 @@ class MainPanel(wx.Panel):
         if len(sys.argv) > 1:
             # Gather data for creation of archive.
             udata = archiver.UtilData()
+            if os.path.isfile(sys.argv[1]):
+                udata['outdir'] = os.path.dirname(sys.argv[1])
+            elif os.path.isdir(sys.argv[1]):
+                udata['outdir'] = os.path.normpath(os.path.join(sys.argv[1], ".."))
+            else:
+                sys.exit("ERROR: Unknown target type!")
             udata['log_text'] = self.log_text.GetValue()
             udata['name'] = self.name_text.GetValue()
             udata['targets'] = sys.argv[1:]
