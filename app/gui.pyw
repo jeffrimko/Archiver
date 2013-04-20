@@ -93,6 +93,9 @@ class MainPanel(wx.Panel):
         if len(sys.argv) > 1:
             # Gather data for creation of archive.
             udata = archiver.UtilData()
+            # Since the typical use case for the GUI utility is to call it from the Windows
+            # SendTo prompt, the archive should be created in the directory where the call is
+            # made.
             if os.path.isfile(sys.argv[1]):
                 udata['outdir'] = os.path.dirname(sys.argv[1])
             elif os.path.isdir(sys.argv[1]):
