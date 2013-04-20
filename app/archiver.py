@@ -1,9 +1,16 @@
 """Utility for archiving files.
 
-An archive is simply a zip file containing a log file plus
-any additional files to archive. The standard used for the
+An archive is simply a zip file containing the archived
+files plus an optional log file. The standard used for the
 log file is a text file named `__archive_info__.txt`.
 The log is always in the root directory of the archive.
+
+By default, the archive filename will be prefixed with
+a timestamp of the time created. The default format is the
+following: `YYMMDDhhmm-<ARCHIVE_NAME>.zip`. Options are
+provided to extend, shorten or remove the timestamp. If a
+name for the archive is not explicitly given, the archive
+name will be based on the name of the first target.
 
 Usage:
   archiver [options] TARGET...
@@ -56,7 +63,7 @@ __version__ = "1.0.0"
 ##==============================================================#
 
 class UtilData(dict):
-    """Object used to organize data within the utility."""
+    """Object used to organize data within the archiver utility."""
     def __init__(self):
         self['targets'] = []   # Path of targets to archive.
         self['log_text'] = ""  # Text for log.
@@ -130,16 +137,7 @@ def zip_targets(zippath, targets=[], top_files=[], flatten=False, delete=False):
             os.remove(f)
 
 def create_archive(udata):
-    """This function creates a new archive zip file. The archive file
-    will be placed in the parent directory that is common to all target
-    files.
-
-    By default, the zip file will take the name of the first argument
-    plus a time-stamp. For example, running the script using
-    `python archiver.py  my_fileA.txt  my_fileB.doc` on 2 January 2010
-    at 1:30pm will result in a zip archive named
-    '201001021330-my_fileA.zip'.
-    """
+    """This function creates a new archive from the provided data."""
     if not udata['targets']:
         sys.exit("ERROR: Must provide at least one target!")
 
