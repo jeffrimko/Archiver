@@ -1,7 +1,6 @@
 Archiver
 ========
-
-Utility for archiving files. An archive consists of a zipfile containing the archived files plus a log file.
+Utility for archiving files. An archive consists of a zip file containing the archived files plus a log file.
 
 Requirements
 ------------
