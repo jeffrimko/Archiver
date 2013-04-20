@@ -53,11 +53,11 @@ class MainPanel(wx.Panel):
         self.log_text = wx.TextCtrl(self, size=(300,200), style=wx.TE_MULTILINE | wx.TE_RICH | wx.TE_PROCESS_ENTER )
 
         # Create control checkboxes and add to sizer.
-        self.date_cb = wx.CheckBox(self, -1, "Do not include timestamp in archive name.")
-        self.prec_cb = wx.CheckBox(self, -1, "Only timestamp to the day (min:sec otherwise).")
+        self.no_ts_cb = wx.CheckBox(self, -1, "Do not include timestamp in archive name.")
+        self.short_ts_cb = wx.CheckBox(self, -1, "Only timestamp to the day (hour:min otherwise).")
         self.del_cb = wx.CheckBox(self, -1, "Delete original files after archiving.")
-        cb_sizer.Add(self.date_cb, 0)
-        cb_sizer.Add(self.prec_cb, 0, wx.TOP, 10)
+        cb_sizer.Add(self.no_ts_cb, 0)
+        cb_sizer.Add(self.short_ts_cb, 0, wx.TOP, 10)
         cb_sizer.Add(self.del_cb, 0, wx.TOP, 10)
 
         # Create main control buttons and add to sizer.
@@ -90,27 +90,23 @@ class MainPanel(wx.Panel):
     def create_new_archive(self, event):
         """Create a new archive."""
         if len(sys.argv) > 1:
-            # Gather information for creation of archive.
-            log_text = self.log_text.GetValue()
-            archive_name = self.name_text.GetValue()
-            add_timestamp = not self.date_cb.GetValue()
-            del_originals = self.del_cb.GetValue()
-            precise_time = not self.prec_cb.GetValue()
+            # Gather data for creation of archive.
+            udata = archiver.UtilData()
+            udata['log_text'] = self.log_text.GetValue()
+            udata['name'] = self.name_text.GetValue()
+            udata['targets'] = sys.argv[1:]
+            udata['no_ts'] = self.no_ts_cb.GetValue()
+            udata['short_ts'] = self.short_ts_cb.GetValue()
+            udata['delete'] = self.del_cb.GetValue()
 
             # Set the mouse cursor to waiting.
             wx.BeginBusyCursor()
 
             # Create archive.
-            status = create_archive(sys.argv[1:], log_text, archive_name, add_timestamp, del_originals, precise_time)
+            create_archive(udata)
 
             # Return the mouse cursor to normal.
             wx.EndBusyCursor()
-
-            if status != "success":
-                # Display error dialog box if the archive creation was unsuccessful.
-                dlg = wx.MessageDialog(self, status, "Archiver: Encountered Error", wx.OK | wx.ICON_ERROR)
-                dlg.ShowModal()
-                dlg.Destroy()
 
         # Exit the application.
         self.quit(event)
