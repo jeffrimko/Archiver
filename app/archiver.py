@@ -234,7 +234,7 @@ def parse_args(args):
     return udata
 
 def main():
-    args = docopt(__doc__, version=__version__)
+    args = docopt(__doc__, version="archiver %s" % (__version__))
     udata = parse_args(args)
     create_archive(udata)
 

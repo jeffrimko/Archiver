@@ -5,7 +5,7 @@ Utility for archiving files. An archive consists of a zipfile containing the arc
 
 Requirements
 ------------
-This application was written in [Python](http://python.org/) and uses the [wxPython](http://wxpython.org/) GUI library. Python 2.6 is recommended although other 2.x versions may work. wxPython 2.8 is recommended. [Py2exe](http://www.py2exe.org/) is recommended for building to an executable on Windows; [bbffreeze](http://pypi.python.org/pypi/bbfreeze/) is recommended for other platforms.
+This application was written in [Python](http://python.org/) and uses the [wxPython](http://wxpython.org/) GUI library. Python 2.6 is recommended although other 2.x versions may work. wxPython 2.8 is recommended.
 
 Archive Log
 -----------
