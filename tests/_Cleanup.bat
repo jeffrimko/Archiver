@@ -13,6 +13,6 @@
 :: SECTION: Main Body                                          ::
 ::=============================================================::
 
-rd /S /Q __output__
-del /S /Q *.zip
-del /S /Q *temp*
+rd /S /Q __output__ 2>NUL
+del /S /Q *.zip 2>NUL
+del /S /Q *temp* 2>NUL

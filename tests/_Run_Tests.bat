@@ -15,6 +15,8 @@
 :: SECTION: Main Body                                          ::
 ::-------------------------------------------------------------::
 
+call _Cleanup.bat
+
 :: Run each found test.
 for /R . %%X in (*_test_*.py) do (
     echo Running %%~nX...

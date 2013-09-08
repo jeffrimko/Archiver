@@ -85,6 +85,17 @@ class UtilData(dict):
 ## SECTION: Function Definitions                                #
 ##==============================================================#
 
+# Function to write an error message to the console.
+write_error = lambda s: sys.stderr.write("ERROR: " + s)
+
+# Function to write an warning message to the console.
+write_warning = lambda s: sys.stderr.write("WARNING: " + s)
+
+def quit_error(s):
+    """Quits the application with an error message."""
+    write_error(s)
+    sys.exit(1)
+
 def get_files(rootdir):
     """Returns a list of files contained in the given root directory and all
     subdirectories. List is returned as absolute paths of fies.
@@ -109,7 +120,7 @@ def zip_targets(zippath, targets=[], top_files=[], flatten=False, delete=False):
         elif os.path.isfile(t):
             files.append(t)
         else:
-            sys.exit("ERROR: Could not locate '%s'!" % (t))
+            quit_error("Could not locate '%s'!" % (t))
 
     # Determine the zipfile name for each file.
     # Zipfile names are determined by removing the common prefix.
@@ -132,7 +143,7 @@ def zip_targets(zippath, targets=[], top_files=[], flatten=False, delete=False):
         if flatten:
             z = os.path.basename(z)
         if z in archive.namelist():
-            print "WARNING: Cannot add `%s` to archive, file with same name already exists!" % (z)
+            write_warning("Cannot add `%s` to archive, file with same name already exists!" % (z))
         else:
             archive.write(f, z)
             if delete:
@@ -141,7 +152,7 @@ def zip_targets(zippath, targets=[], top_files=[], flatten=False, delete=False):
 def create_archive(udata):
     """This function creates a new archive from the provided data."""
     if not udata['targets']:
-        sys.exit("ERROR: Must provide at least one target!")
+        write_error("Must provide at least one target!")
 
     # If the archive name has not been explicitly defined, generate one from the
     # first target file name and the current timestamp.
@@ -167,13 +178,13 @@ def create_archive(udata):
     # Create output directory if is doesn't exist.
     if os.path.exists(udata['outdir']):
         if not os.path.isdir(udata['outdir']):
-            sys.exit("ERROR: Given output directory not valid!")
+            write_error("Given output directory not valid!")
     else:
         os.makedirs(udata['outdir'])
 
     # Check that file with same name doesn't already exist.
     if os.path.isfile(arcpath):
-        sys.exit("ERROR: Archive named '%s' already exists!" % (arcpath))
+        write_error("Archive named '%s' already exists!" % (arcpath))
 
     # Create temporary directory.
     tmpdir = tempfile.mkdtemp()
@@ -184,7 +195,7 @@ def create_archive(udata):
         logpath = os.path.join(tmpdir, "__archive_info__.txt")
         if not create_notefile(logpath, udata['name'], udata['log_text']):
             shutil.rmtree(tmpdir)
-            sys.exit("ERROR: Could not create archive info file!")
+            write_error("Could not create archive info file!")
         top_files.append(logpath)
 
     # Create archive and zip targets.
