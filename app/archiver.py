@@ -43,8 +43,8 @@ Options:
 
 import os
 import shutil
-import tempfile
 import sys
+import tempfile
 import time
 import zipfile
 from zipfile import ZipFile, ZIP_DEFLATED
@@ -161,6 +161,13 @@ def create_archive(udata):
     arcpath = name
     if udata['outdir']:
         arcpath = os.path.join(udata['outdir'], name)
+
+    # Create output directory if is doesn't exist.
+    if os.path.exists(udata['outdir']):
+        if not os.path.isdir(udata['outdir']):
+            sys.exit("ERROR: Given output directory not valid!")
+    else:
+        os.makedirs(udata['outdir'])
 
     # Check that file with same name doesn't already exist.
     if os.path.isfile(arcpath):
