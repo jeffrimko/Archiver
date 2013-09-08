@@ -1,5 +1,5 @@
 :: Builds a Windows EXE from the Python scripts.
-:: __Dependencies__:
+:: **Dependencies**:
 :: PyInstaller must have a wrapper batch file on the PATH.
 
 ::=============================================================::
