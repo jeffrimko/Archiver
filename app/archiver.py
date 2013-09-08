@@ -129,12 +129,14 @@ def zip_targets(zippath, targets=[], top_files=[], flatten=False, delete=False):
     # Create zip archive and write files.
     archive = zipfile.ZipFile(zippath, "w")
     for f,z in zip(files, zfiles):
-        if not flatten:
-            archive.write(f, z)
+        if flatten:
+            z = os.path.basename(z)
+        if z in archive.namelist():
+            print "WARNING: Cannot add `%s` to archive, file with same name already exists!" % (z)
         else:
-            archive.write(f, os.path.basename(z))
-        if delete:
-            os.remove(f)
+            archive.write(f, z)
+            if delete:
+                os.remove(f)
 
 def create_archive(udata):
     """This function creates a new archive from the provided data."""
