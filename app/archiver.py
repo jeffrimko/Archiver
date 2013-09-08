@@ -195,7 +195,7 @@ def create_notefile(path, title, txt="", attrs={}):
         by default only the `:date:` attribute is created.
     """
     # Generate timestamp.
-    ts = time.strftime("%I:%M%p (%Z)").lstrip('0')
+    ts = time.strftime("%d %B %Y %I:%M%p (%Z)").lstrip('0')
 
     # Check that path directory exists.
     path = os.path.abspath(path)

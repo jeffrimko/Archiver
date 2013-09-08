@@ -1,5 +1,5 @@
-:: Fixme
-:: __Dependencies__: Fixme
+:: Removes all generated project files.
+:: __Dependencies__: None
 
 ::=============================================================::
 :: COPYRIGHT 2013, REVISED 2013, Jeff Rimko.                   ::
