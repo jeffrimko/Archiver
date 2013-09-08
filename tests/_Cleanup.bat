@@ -15,3 +15,4 @@
 
 rd /S /Q __output__
 del /S /Q *.zip
+del /S /Q *temp*
