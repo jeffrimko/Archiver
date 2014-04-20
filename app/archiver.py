@@ -34,7 +34,7 @@ Options:
 """
 
 ##==============================================================#
-## COPYRIGHT 2012, REVISED 2013, Jeff Rimko.                    #
+## DEVELOPED 2012, REVISED 2014, Jeff Rimko.                    #
 ##==============================================================#
 
 ##==============================================================#
@@ -56,7 +56,7 @@ from docopt import docopt
 ##==============================================================#
 
 # The version of the utility.
-__version__ = "1.0.0"
+__version__ = "1.1.0"
 
 ##==============================================================#
 ## SECTION: Class Definitions                                   #
@@ -149,26 +149,16 @@ def zip_targets(zippath, targets=[], top_files=[], flatten=False, delete=False):
             if delete:
                 os.remove(f)
 
-def create_archive(udata):
+def create_archive(udata, outname=""):
     """This function creates a new archive from the provided data."""
     if not udata['targets']:
         write_error("Must provide at least one target!")
 
-    # If the archive name has not been explicitly defined, generate one from the
-    # first target file name and the current timestamp.
-    if not udata['name']:
-        udata['name'] = os.path.splitext(os.path.basename(udata['targets'][0]))[0]
-    name = udata['name']
-    name += ".zip"
-
-    # Add timestamp to archive name.
-    if not udata['no_ts']:
-        if udata['long_ts']:
-            name = "%s-%s" % (time.strftime("%Y%m%d%H%M%S"), name)
-        elif udata['short_ts']:
-            name = "%s-%s" % (time.strftime("%Y%m%d"), name)
-        else:
-            name = "%s-%s" % (time.strftime("%Y%m%d%H%M"), name)
+    # Handle output filename.
+    if not outname:
+        name = make_outname(udata)
+    else:
+        name = outname
 
     # Finalize archive path.
     arcpath = name
@@ -203,6 +193,26 @@ def create_archive(udata):
 
     # Remove temporary directory.
     shutil.rmtree(tmpdir)
+
+def make_outname(udata):
+    """Makes an output filename from the given utility data."""
+    # If the archive name has not been explicitly defined, generate one from the
+    # first target file name and the current timestamp.
+    if not udata['name']:
+        udata['name'] = os.path.splitext(os.path.basename(udata['targets'][0]))[0]
+    name = udata['name']
+    name += ".zip"
+
+    # Add timestamp to archive name.
+    if not udata['no_ts']:
+        if udata['long_ts']:
+            name = "%s-%s" % (time.strftime("%Y%m%d%H%M%S"), name)
+        elif udata['short_ts']:
+            name = "%s-%s" % (time.strftime("%Y%m%d"), name)
+        else:
+            name = "%s-%s" % (time.strftime("%Y%m%d%H%M"), name)
+
+    return name
 
 def create_notefile(path, title, txt="", attrs={}):
     """Creates an Asciidoc note file.
