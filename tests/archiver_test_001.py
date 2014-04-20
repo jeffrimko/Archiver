@@ -1,7 +1,7 @@
 """This script provides a unit test of the Archiver utility."""
 
 ##==============================================================#
-## COPYRIGHT 2013, REVISED 2013, Jeff Rimko.                    #
+## DEVELOPED 2013, REVISED 2013, Jeff Rimko.                    #
 ##==============================================================#
 
 import os
