@@ -1,9 +1,9 @@
 Archiver Changelog
 ==================
 
-## v1.1.1 (2014-05-25)
+## v1.1.0 (TODO)
 ### Release highlights
-  - In gArchiver, fixed tab order of GUI elements.
+  - In gArchiver, added output name preview field.
 
 ### All additions and changes
 Not applicable.
