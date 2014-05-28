@@ -46,25 +46,31 @@ class MainPanel(wx.Panel):
 
         # Create text input for the archive name.
         name_label = wx.StaticText(self, label="Archive Name:")
-        self.name_text = wx.TextCtrl(self, size=(300,-1), style=wx.TE_MULTILINE | wx.HSCROLL | wx.TE_RICH)
+        style = wx.TE_MULTILINE | wx.HSCROLL | wx.TE_RICH
+        self.name_text = wx.TextCtrl(self, size=(300,-1), style=style)
         archive_name = os.path.splitext(os.path.basename(sys.argv[1]))[0]
         self.name_text.ChangeValue(archive_name)
 
         # Create text input for the archive log.
         log_label = wx.StaticText(self, label="Log Text:")
-        self.log_text = wx.TextCtrl(self, size=(300,200), style=wx.TE_MULTILINE | wx.TE_RICH | wx.TE_PROCESS_ENTER )
+        style = wx.TE_MULTILINE | wx.TE_RICH | wx.TE_PROCESS_ENTER
+        self.log_text = wx.TextCtrl(self, size=(300,200), style=style)
 
         # Create option check boxes and add to sizer.
-        self.no_ts_cb = wx.CheckBox(self, -1, "Do not include timestamp in archive name.")
-        self.short_ts_cb = wx.CheckBox(self, -1, "Only timestamp to the day (hour:min otherwise).")
-        self.del_cb = wx.CheckBox(self, -1, "Delete original files after archiving.")
+        self.no_ts_cb = wx.CheckBox(self, -1,
+                "Do not include timestamp in archive name.")
+        self.short_ts_cb = wx.CheckBox(self, -1,
+                "Only timestamp to the day (hour:min otherwise).")
+        self.del_cb = wx.CheckBox(self, -1,
+                "Delete original files after archiving.")
         opts_sizer.Add(self.no_ts_cb, 0)
         opts_sizer.Add(self.short_ts_cb, 0, wx.TOP, 10)
         opts_sizer.Add(self.del_cb, 0, wx.TOP, 10)
 
         # Create output filename preview.
         prev_label = wx.StaticText(self, label="Output File Name:")
-        self.prev_text = wx.TextCtrl(self, size=(300,-1), style=wx.TE_MULTILINE | wx.HSCROLL | wx.TE_RICH)
+        style = wx.TE_MULTILINE | wx.HSCROLL | wx.TE_RICH
+        self.prev_text = wx.TextCtrl(self, size=(300,-1), style=style)
 
         # Create main control buttons and add to sizer.
         ok_button = wx.Button(self, wx.ID_OK)
@@ -87,11 +93,11 @@ class MainPanel(wx.Panel):
 
         # Bind events to the methods containing the logic.
         self.Bind(wx.EVT_BUTTON, self.create_new_archive, ok_button)
-        self.Bind(wx.EVT_TEXT_ENTER, self.create_new_archive, self.log_text)
         self.Bind(wx.EVT_BUTTON, self.quit, cancel_button)
         self.Bind(wx.EVT_CHECKBOX, self.update_prev, self.no_ts_cb)
         self.Bind(wx.EVT_CHECKBOX, self.update_prev, self.short_ts_cb)
         self.Bind(wx.EVT_TEXT, self.update_prev, self.name_text)
+        self.Bind(wx.EVT_TEXT_ENTER, self.create_new_archive, self.log_text)
 
         # Prepare the utility data.
         self.udata = archiver.UtilData()
@@ -125,7 +131,8 @@ class MainPanel(wx.Panel):
                     # which would cause issues with the archiver module.
                     self.udata['outdir'] = "."
             elif os.path.isdir(sys.argv[1]):
-                self.udata['outdir'] = os.path.normpath(os.path.join(sys.argv[1], ".."))
+                self.udata['outdir'] = os.path.normpath(
+                        os.path.join(sys.argv[1], ".."))
             else:
                 sys.exit("ERROR: Unknown target type!")
             self.udata['log_text'] = self.log_text.GetValue()
@@ -153,12 +160,14 @@ class MainWindow(wx.Frame):
 
     def __init__(self, parent, title):
         """This function defines initialization logic of the main window."""
+        # This style disables the ability to resize the window.
+        style = wx.DEFAULT_FRAME_STYLE
+        style &= ~(wx.RESIZE_BORDER | wx.RESIZE_BOX | wx.MAXIMIZE_BOX)
         wx.Frame.__init__(self,
                           parent,
                           title=title,
                           size=(350, 540),
-                          # This style disables the ability to resize the window.
-                          style=wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.RESIZE_BOX | wx.MAXIMIZE_BOX))
+                          style=style)
         panel = MainPanel(self)
         self.Show(True)
 
