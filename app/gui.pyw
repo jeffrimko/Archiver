@@ -46,7 +46,7 @@ class MainPanel(wx.Panel):
 
         # Create text input for the archive name.
         name_label = wx.StaticText(self, label="Archive Name:")
-        style = wx.TE_MULTILINE | wx.HSCROLL | wx.TE_RICH
+        style = wx.HSCROLL | wx.TE_RICH
         self.name_text = wx.TextCtrl(self, size=(300,-1), style=style)
         archive_name = os.path.splitext(os.path.basename(sys.argv[1]))[0]
         self.name_text.ChangeValue(archive_name)
@@ -69,7 +69,7 @@ class MainPanel(wx.Panel):
 
         # Create output filename preview.
         prev_label = wx.StaticText(self, label="Output File Name:")
-        style = wx.TE_MULTILINE | wx.HSCROLL | wx.TE_RICH
+        style = wx.HSCROLL | wx.TE_RICH | wx.TE_PROCESS_ENTER
         self.prev_text = wx.TextCtrl(self, size=(300,-1), style=style)
 
         # Create main control buttons and add to sizer.
@@ -98,6 +98,7 @@ class MainPanel(wx.Panel):
         self.Bind(wx.EVT_CHECKBOX, self.update_prev, self.short_ts_cb)
         self.Bind(wx.EVT_TEXT, self.update_prev, self.name_text)
         self.Bind(wx.EVT_TEXT_ENTER, self.create_new_archive, self.log_text)
+        self.Bind(wx.EVT_TEXT_ENTER, self.create_new_archive, self.prev_text)
 
         # Prepare the utility data.
         self.udata = archiver.UtilData()
@@ -166,7 +167,7 @@ class MainWindow(wx.Frame):
         wx.Frame.__init__(self,
                           parent,
                           title=title,
-                          size=(350, 540),
+                          size=(350, 510),
                           style=style)
         panel = MainPanel(self)
         self.Show(True)
