@@ -46,14 +46,13 @@ class MainPanel(wx.Panel):
 
         # Create text input for the archive name.
         name_label = wx.StaticText(self, label="Archive Name:")
-        style = wx.HSCROLL | wx.TE_RICH
-        self.name_text = wx.TextCtrl(self, size=(300,-1), style=style)
+        self.name_text = wx.TextCtrl(self, size=(300,-1))
         archive_name = os.path.splitext(os.path.basename(sys.argv[1]))[0]
         self.name_text.ChangeValue(archive_name)
 
         # Create text input for the archive log.
         log_label = wx.StaticText(self, label="Log Text:")
-        style = wx.TE_MULTILINE | wx.TE_RICH | wx.TE_PROCESS_ENTER
+        style = wx.TE_MULTILINE | wx.TE_PROCESS_ENTER
         self.log_text = wx.TextCtrl(self, size=(300,200), style=style)
 
         # Create option check boxes and add to sizer.
@@ -69,8 +68,7 @@ class MainPanel(wx.Panel):
 
         # Create output filename preview.
         prev_label = wx.StaticText(self, label="Output File Name:")
-        style = wx.HSCROLL | wx.TE_RICH | wx.TE_PROCESS_ENTER
-        self.prev_text = wx.TextCtrl(self, size=(300,-1), style=style)
+        self.prev_text = wx.TextCtrl(self, size=(300,-1))
 
         # Create main control buttons and add to sizer.
         ok_button = wx.Button(self, wx.ID_OK)
@@ -167,7 +165,7 @@ class MainWindow(wx.Frame):
         wx.Frame.__init__(self,
                           parent,
                           title=title,
-                          size=(350, 510),
+                          size=(350, 540),
                           style=style)
         panel = MainPanel(self)
         self.Show(True)
