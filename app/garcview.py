@@ -8,14 +8,7 @@
 ## SECTION: Imports                                             #
 ##==============================================================#
 
-import os
-import sys
-from time import sleep
-
 import wx
-
-import archiver
-from archiver import create_archive, make_outname
 
 ##==============================================================#
 ## SECTION: Global Definitions                                  #
@@ -46,9 +39,9 @@ class MainPanel(wx.Panel):
 
         # Create text input for the archive name.
         name_label = wx.StaticText(self, label="Archive Name:")
-        self.name_text = wx.TextCtrl(self, size=(300,-1))
-        archive_name = os.path.splitext(os.path.basename(sys.argv[1]))[0]
-        self.name_text.ChangeValue(archive_name)
+        style = wx.TE_PROCESS_ENTER
+        self.name_text = wx.TextCtrl(self, size=(300,-1), style=style)
+
 
         # Create text input for the archive log.
         log_label = wx.StaticText(self, label="Log Text:")
@@ -68,16 +61,16 @@ class MainPanel(wx.Panel):
 
         # Create output filename preview.
         prev_label = wx.StaticText(self, label="Output File Name:")
-        self.prev_text = wx.TextCtrl(self, size=(300,-1))
+        self.oname_text = wx.TextCtrl(self, size=(300,-1))
 
         # Create main control buttons and add to sizer.
-        ok_button = wx.Button(self, wx.ID_OK)
-        cancel_button = wx.Button(self, wx.ID_CANCEL)
-        bttn_sizer.Add(ok_button, 0, wx.LEFT, 30)
-        bttn_sizer.Add(cancel_button, 0, wx.LEFT, 90)
+        self.ok_button = wx.Button(self, wx.ID_OK)
+        self.cancel_button = wx.Button(self, wx.ID_CANCEL)
+        bttn_sizer.Add(self.ok_button, 0, wx.LEFT, 30)
+        bttn_sizer.Add(self.cancel_button, 0, wx.LEFT, 90)
 
         prev_sizer.Add(prev_label, 0, wx.LEFT, 20)
-        prev_sizer.Add(self.prev_text, 0, wx.LEFT, 20)
+        prev_sizer.Add(self.oname_text, 0, wx.LEFT, 20)
 
         # Add items to main sizer.
         main_sizer.Add(name_label, 0, wx.TOP | wx.LEFT, 20)
@@ -89,76 +82,16 @@ class MainPanel(wx.Panel):
         main_sizer.Add(bttn_sizer, 0, wx.TOP | wx.LEFT, 20)
         self.SetSizerAndFit(main_sizer)
 
-        # Bind events to the methods containing the logic.
-        self.Bind(wx.EVT_BUTTON, self.create_new_archive, ok_button)
-        self.Bind(wx.EVT_BUTTON, self.quit, cancel_button)
-        self.Bind(wx.EVT_CHECKBOX, self.update_prev, self.no_ts_cb)
-        self.Bind(wx.EVT_CHECKBOX, self.update_prev, self.short_ts_cb)
-        self.Bind(wx.EVT_TEXT, self.update_prev, self.name_text)
-        self.Bind(wx.EVT_TEXT_ENTER, self.create_new_archive, self.log_text)
-        self.Bind(wx.EVT_TEXT_ENTER, self.create_new_archive, self.prev_text)
-
-        # Prepare the utility data.
-        self.udata = archiver.UtilData()
-
-        # Update output filename preview.
-        self.update_prev()
-
         # This sets initial focus to the log text input.
         self.log_text.SetFocus()
-
-    def quit(self, event):
-        """Exit the application."""
-        self.parent.Close()
-
-    def update_prev(self, event=None):
-        """Updates the output filename preview."""
-        self.update_udata()
-        self.prev_text.ChangeValue(make_outname(self.udata))
-
-    def update_udata(self, event=None):
-        """Updates the archiver utility data."""
-        if len(sys.argv) > 1:
-            # Since the typical use case for the GUI utility is to call it from
-            # the Windows SendTo prompt, the archive should be created in the
-            # directory where the call is made.
-            if os.path.isfile(sys.argv[1]):
-                self.udata['outdir'] = os.path.dirname(sys.argv[1])
-                if not self.udata['outdir']:
-                    # NOTE: During testing, if the current directory was the
-                    # output directory, the output directory would be blank
-                    # which would cause issues with the archiver module.
-                    self.udata['outdir'] = "."
-            elif os.path.isdir(sys.argv[1]):
-                self.udata['outdir'] = os.path.normpath(
-                        os.path.join(sys.argv[1], ".."))
-            else:
-                sys.exit("ERROR: Unknown target type!")
-            self.udata['log_text'] = self.log_text.GetValue()
-            self.udata['name'] = self.name_text.GetValue()
-            self.udata['targets'] = sys.argv[1:]
-            self.udata['no_ts'] = self.no_ts_cb.GetValue()
-            self.udata['short_ts'] = self.short_ts_cb.GetValue()
-            self.udata['delete'] = self.del_cb.GetValue()
-
-    def create_new_archive(self, event):
-        """Create a new archive."""
-        self.update_udata()
-        if self.udata['targets']:
-            # Set the mouse cursor to waiting.
-            wx.BeginBusyCursor()
-            # Create archive.
-            create_archive(self.udata, self.prev_text.GetValue())
-            # Return the mouse cursor to normal.
-            wx.EndBusyCursor()
-        # Exit the application.
-        self.quit(event)
 
 class MainWindow(wx.Frame):
     """This class defines the main window."""
 
     def __init__(self, parent, title):
         """This function defines initialization logic of the main window."""
+        self.parent = parent
+
         # This style disables the ability to resize the window.
         style = wx.DEFAULT_FRAME_STYLE
         style &= ~(wx.RESIZE_BORDER | wx.RESIZE_BOX | wx.MAXIMIZE_BOX)
@@ -167,15 +100,28 @@ class MainWindow(wx.Frame):
                           title=title,
                           size=(350, 540),
                           style=style)
-        panel = MainPanel(self)
+        self.mainpanel = MainPanel(self)
+
+    def disable(self):
+        self.Disable()
+        for widget in self.mainpanel.GetChildren():
+            widget.Disable()
+
+    def show(self):
         self.Show(True)
+
+    def show_warning(self, caption, message):
+        dlg = wx.MessageDialog(self.parent, message, caption, wx.OK | wx.ICON_EXCLAMATION)
+        dlg.ShowModal()
+        dlg.Destroy()
 
 ##==============================================================#
 ## SECTION: Main Body                                           #
 ##==============================================================#
 
 if __name__ == "__main__":
-    if len(sys.argv) >= 2:
-        app = wx.App(False)
-        frame = MainWindow(None, "%s %s" % (APPNAME, archiver.__version__))
-        app.MainLoop()
+    app = wx.App(False)
+    frame = MainWindow(None, "%s %s" % (APPNAME, "debug"))
+    # frame.show()
+    # app.MainLoop()
+    frame.show_warning("Foo", "Bar")
