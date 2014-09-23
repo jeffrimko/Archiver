@@ -55,9 +55,7 @@ class ArchiverApp(wx.App):
         self.arcctr.logtxt = panel.log_text.GetValue()
 
         # Create
-        self.arcctr.create_log()
         self.arcctr.create_archive()
-        self.arcctr.delete_log()
         self.quit()
 
     def update_oname(self, event=None):

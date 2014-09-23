@@ -35,23 +35,36 @@ class ArcCreator:
         self.outdir = "."      #: Output directory for the archive.
         self.logname = "__archive_info__.txt"  #: Filename of log.
 
-        # The archive filename timestamp style.
+        #: The archive filename timestamp style.
         self.ts_style = "normal"
-        # True if the original targets should be deleted from the filesystem
-        # after archiving.
+        #: True if the original targets should be deleted from the filesystem
+        #: after archiving.
         self.delete = False
-        # True if the directory structure should be flattened.
+        #: True if the directory structure should be flattened.
         self.flatten = False
-        # True if no log file should be created.
+        #: True if no log file should be created.
         self.no_log = False
+        #: True if existing archive with same name should be overwritten.
+        self.overwrite = False
         #----}
 
         #{-- Archive post-creation attributes. --
+        #: Used to hold the log file path. Should only be populated if the log
+        #: file currently exists on the filesystem (which is temporary).
         self.logpath = ""
+        #: List of the archive targets.
         self.arctargets = []
+        #: List of archive targets successfully added to the archive.
         self.added = []
+        #: List of archive targets not added to the archive.
         self.notadded = []
+        #: List of system targets not able to be deleted (only if requested).
         self.notdel = []
+        #: True if an existing archive with the same name was overwritten
+        #: during creation.
+        self.overwritten = False
+        #: Holds error message if creation fails.
+        self.errmsg = ""
         #----}
 
     def guess_name(self):
@@ -69,6 +82,10 @@ class ArcCreator:
 
     def format_outname(self):
         """Formats an output filename.
+
+        :Postconditions:
+          - If the `name` attribute is not set, one will be guessed.
+
         :Returns:
           - (str) The output filename (not full path) for the archive.
         """
@@ -85,7 +102,7 @@ class ArcCreator:
             formatted = "%s-%s" % (ts, formatted)
         return formatted + ".zip"
 
-    def create_log(self):
+    def _create_log(self):
         """Creates a log file.
 
         :Postconditions:
@@ -109,7 +126,7 @@ class ArcCreator:
         f = open(self.logpath, "w")
         f.write(logdoc)
 
-    def delete_log(self):
+    def _delete_log(self):
         """Deletes the previously created log file.
 
         :Postconditions:
@@ -117,6 +134,7 @@ class ArcCreator:
         """
         if self.logpath:
             os.remove(self.logpath)
+            self.logpath = ""
 
     def create_archive(self):
         """Creates an archive file.
@@ -126,34 +144,50 @@ class ArcCreator:
             ``arctargets``.
           - An archive file will be created on the filesystem.
           - The attribute ``arc`` is set to the created archive.
+
+        :Returns:
+          - (bool) True if the archive was created, false otherwise.
         """
         # Bail if no targets.
         if not self.systargets:
-            return
+            self.errmsg = "No system targets specified."
+            return False
 
+        # Prepare output path.
         outname = self.format_outname()
-        self.create_log()
+        arcpath = os.path.join(os.path.abspath(self.outdir), outname)
+        if os.path.exists(arcpath):
+            if not self.overwrite:
+                self.errmsg = "Archive with same name exists and overwrite flag is not set."
+                return False
+            else:
+                self.overwritten = True
 
-        # Prepare archive targets.
+        # Create archive.
+        self._create_log()
+        self.arc = arclib.Archive(arcpath)
+        self.arc.create()
         self.arctargets = arclib.convert_systargets(self.systargets, flatten=self.flatten)
         if self.logpath:
             self.arctargets.append(arclib.ArcTarget(self.logpath, self.logname))
-
-        # Create archive.
-        arcpath = os.path.join(os.path.abspath(self.outdir), outname)
-        self.arc = arclib.Archive(arcpath)
-        self.arc.create()
         for a in self.arctargets:
             if self.arc.add(a):
                 self.added.append(a)
             else:
                 self.notadded.append(a)
+        self._delete_log()
 
         # TODO: Could check notadded to prevent deleting files that were
         # not archived.
         notdel = []
         if self.delete:
             notdel = arclib.delete_systargets(self.systargets)
+
+        # Check that the archive file exists.
+        if not os.path.exists(arcpath):
+            self.errmsg = "Archive file could not be located."
+            return False
+        return True
 
 ##==============================================================#
 ## SECTION: Main Body                                           #

@@ -42,6 +42,7 @@ Options:
 ##==============================================================#
 
 import os
+import sys
 
 from docopt import docopt
 
@@ -57,6 +58,12 @@ __version__ = "1.1.0"
 ##==============================================================#
 ## SECTION: Function Definitions                                #
 ##==============================================================#
+
+# Function to write an error message to the console.
+write_error = lambda s: sys.stderr.write("ERROR: " + s)
+
+# Function to write an warning message to the console.
+write_warning = lambda s: sys.stderr.write("WARNING: " + s)
 
 def main():
     """Handles the main application logic."""
@@ -84,9 +91,8 @@ def parse_args(args):
 def main():
     args = docopt(__doc__, version="archiver %s" % (__version__))
     arcctr = parse_args(args)
-    arcctr.create_log()
-    arcctr.create_archive()
-    arcctr.delete_log()
+    if not arcctr.create_archive():
+        write_error("Archive could not be created! %s" % arcctr.errmsg)
 
 ##==============================================================#
 ## SECTION: Main Body                                           #
