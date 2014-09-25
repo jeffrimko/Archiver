@@ -177,7 +177,8 @@ class ArcCreator:
         self.arctargets, notfound = arclib.convert_sys2arc(self.systargets, flatten=self.flatten)
         if self.logpath:
             self.arctargets.append(arclib.ArcTarget(self.logpath, self.logname))
-        for a in self.arctargets:
+        # Iterate only through archive targets that have valid zip file paths.
+        for a in [i for i in self.arctargets if i.zippath]:
             if self.arc.add(a):
                 self.added.append(a)
             else:
