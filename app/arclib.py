@@ -96,7 +96,7 @@ class Archive:
         if not self.zfile:
             return False
         if not arctarget.zippath:
-            return False
+            return True
         if not arctarget.syspath:
             return False
         if not os.path.exists(arctarget.syspath):
@@ -239,23 +239,26 @@ def expand_systarget(target, nofiles=False, nodirs=False):
     all subfiles and subdirectories.
 
     :param nofiles: If true, no files will be returned.
-    :param nodir: If true, no directories will be returned.
+    :param nodirs: If true, no directories will be returned.
 
     :Returns:
       - List of expanded system targets.
     """
-    if not os.path.isdir(target) and os.path.isfile(target):
-        return [os.path.abspath(target)]
     expanded = []
-    for i in os.listdir(target):
-        ipath = os.path.join(target, i)
-        if os.path.isdir(ipath):
-            if not nodirs:
-                expanded.append(os.path.abspath(ipath))
-            expanded += expand_systarget(ipath, nofiles=nofiles, nodirs=nodirs)
-        elif os.path.isfile(ipath):
-            if not nofiles:
-                expanded.append(os.path.abspath(ipath))
+    abspath = os.path.abspath(target)
+
+    # Handle files.
+    if os.path.isfile(abspath) and not nofiles:
+        return [abspath]
+
+    # Handle directories.
+    if os.path.isdir(abspath):
+        if not nodirs:
+            expanded.append(abspath)
+        for i in os.listdir(abspath):
+            ipath = os.path.join(abspath, i)
+            expanded.extend(expand_systarget(ipath, nofiles=nofiles, nodirs=nodirs))
+
     return expanded
 
 ##==============================================================#
@@ -263,8 +266,4 @@ def expand_systarget(target, nofiles=False, nodirs=False):
 ##==============================================================#
 
 if __name__ == '__main__':
-    a = Archive("appinfo.zip")
-    print a.exists()
-    print a.contents()
-    print a.logname()
-    print a.read_log()
+    print expand_systarget("testdir2")
