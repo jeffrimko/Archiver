@@ -47,29 +47,24 @@ import sys
 from docopt import docopt
 
 import arcmgr
+from appinfo import ARCHIVER_NAME, ARCHIVER_VER
 
 ##==============================================================#
 ## SECTION: Global Definitions                                  #
 ##==============================================================#
 
-# The version of the utility.
-__version__ = "1.1.0"
+#: Combined application name and version string.
+NAMEVER = "%s %s" % (ARCHIVER_NAME, ARCHIVER_VER)
 
 ##==============================================================#
 ## SECTION: Function Definitions                                #
 ##==============================================================#
 
-# Function to write an error message to the console.
-write_error = lambda s: sys.stderr.write("ERROR: " + s)
+#: Function to print an error message to the console.
+print_error = lambda s: sys.stderr.write("ERROR: " + s)
 
-# Function to write an warning message to the console.
-write_warning = lambda s: sys.stderr.write("WARNING: " + s)
-
-def main():
-    """Handles the main application logic."""
-    args = docopt(__doc__, version="archiver %s" % (__version__))
-    udata = parse_args(args)
-    create_archive(udata)
+#: Function to print an warning message to the console.
+print_warning = lambda s: sys.stderr.write("WARNING: " + s)
 
 def parse_args(args):
     """Parses command line arguments into a UtilData object."""
@@ -89,13 +84,14 @@ def parse_args(args):
     return arcctr
 
 def main():
-    args = docopt(__doc__, version="archiver %s" % (__version__))
+    """The application main logic."""
+    args = docopt(__doc__, version=NAMEVER)
     arcctr = parse_args(args)
     if not arcctr.create_archive():
-        write_error("Archive could not be created! %s" % arcctr.errmsg)
+        print_error("Archive could not be created! %s" % arcctr.errmsg)
     if arcctr.warnmsgs:
         for w in arcctr.warnmsgs:
-            write_warning(w)
+            print_warning(w)
 
 ##==============================================================#
 ## SECTION: Main Body                                           #

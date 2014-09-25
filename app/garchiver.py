@@ -20,6 +20,7 @@ from appinfo import GARCHIVER_NAME, GARCHIVER_VER
 ## SECTION: Global Definitions                                  #
 ##==============================================================#
 
+#: Combined application name and version string.
 NAMEVER = "%s %s" % (GARCHIVER_NAME, GARCHIVER_VER)
 
 ##==============================================================#

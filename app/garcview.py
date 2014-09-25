@@ -11,13 +11,6 @@
 import wx
 
 ##==============================================================#
-## SECTION: Global Definitions                                  #
-##==============================================================#
-
-# The app name.
-APPNAME = "gArchiver"
-
-##==============================================================#
 ## SECTION: Class Definitions                                   #
 ##==============================================================#
 
@@ -96,21 +89,24 @@ class MainWindow(wx.Frame):
         style = wx.DEFAULT_FRAME_STYLE
         style &= ~(wx.RESIZE_BORDER | wx.RESIZE_BOX | wx.MAXIMIZE_BOX)
         wx.Frame.__init__(self,
-                          parent,
-                          title=title,
-                          size=(350, 540),
-                          style=style)
+                parent,
+                title=title,
+                size=(350, 540),
+                style=style)
         self.mainpanel = MainPanel(self)
 
     def disable(self):
+        """Disables (grays out) the main window."""
         self.Disable()
         for widget in self.mainpanel.GetChildren():
             widget.Disable()
 
     def show(self):
+        """Shows the main windows."""
         self.Show(True)
 
     def show_warning(self, caption, message):
+        """Shows a warning dialog."""
         dlg = wx.MessageDialog(self.parent, message, caption, wx.OK | wx.ICON_EXCLAMATION)
         dlg.ShowModal()
         dlg.Destroy()
@@ -121,7 +117,8 @@ class MainWindow(wx.Frame):
 
 if __name__ == "__main__":
     app = wx.App(False)
-    frame = MainWindow(None, "%s %s" % (APPNAME, "debug"))
-    # frame.show()
+    frame = MainWindow(None, "%s %s" % ("debug", "debug"))
+    frame.show()
+    frame.disable()
     # app.MainLoop()
     frame.show_warning("Foo", "Bar")

@@ -1,7 +1,7 @@
-"""FIXME..."""
+"""This script provides a library for working with Asciidoc markup."""
 
 ##==============================================================#
-## COPYRIGHT 2014, REVISED 2014, Jeff Rimko.                    #
+## DEVELOPED 2014, REVISED 2014, Jeff Rimko.                    #
 ##==============================================================#
 
 ##==============================================================#
@@ -10,6 +10,7 @@
 
 def format_doc(title, body, date="", author=""):
     """Formats the document text as Asciidoc.
+
     :param title: (str) Title of the document.
     :param body: (str) Body of the document.
     :param date: (str) Date stamp for the document.
