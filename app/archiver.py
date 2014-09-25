@@ -93,6 +93,9 @@ def main():
     arcctr = parse_args(args)
     if not arcctr.create_archive():
         write_error("Archive could not be created! %s" % arcctr.errmsg)
+    if arcctr.warnmsgs:
+        for w in arcctr.warnmsgs:
+            write_warning(w)
 
 ##==============================================================#
 ## SECTION: Main Body                                           #

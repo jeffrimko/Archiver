@@ -23,7 +23,7 @@ set OUTDIR=__output__
 
 mkdir %OUTDIR% 2>NUL
 call pyinstaller --out=%OUTDIR% --name=archiver --onefile --console archiver.py
-call pyinstaller --out=%OUTDIR% --name=garchiver --onefile --windowed gui.pyw
+call pyinstaller --out=%OUTDIR% --name=garchiver --onefile --windowed garchiver.py
 mv *.log %OUTDIR%
 pause
 exit /b 0

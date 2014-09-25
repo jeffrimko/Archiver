@@ -118,7 +118,7 @@ class TestCases(unittest.TestCase):
         # Check temp file is gone.
         test.assertFalse(os.path.exists("temp1.txt"))
 
-        # Check temp file not added exists.
+        # Check temp file not added exists (due to name collision).
         test.assertTrue(os.path.exists("bar/temp1.txt"))
 
         # Cleanup.

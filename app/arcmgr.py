@@ -1,7 +1,9 @@
-"""FIXME..."""
+"""This script contains objects that manage high-level operations on
+archives.
+"""
 
 ##==============================================================#
-## COPYRIGHT 2014, REVISED 2014, Jeff Rimko.                    #
+## DEVELOPED 2014, REVISED 2014, Jeff Rimko.                    #
 ##==============================================================#
 
 ##==============================================================#
@@ -49,8 +51,10 @@ class ArcCreator:
         #----}
 
         #{-- Archive post-creation attributes. --
-        #: Used to hold the log file path. Should only be populated if the log
-        #: file currently exists on the filesystem (which is temporary).
+        #: Archive file path.
+        self.arcpath = ""
+        #: The log file path. Should only be populated if the log file
+        #: currently exists on the filesystem (which is temporary).
         self.logpath = ""
         #: List of the archive targets.
         self.arctargets = []
@@ -58,13 +62,15 @@ class ArcCreator:
         self.added = []
         #: List of archive targets not added to the archive.
         self.notadded = []
-        #: List of system targets not able to be deleted (only if requested).
+        #: List of targets not able to be deleted (only if requested).
         self.notdel = []
         #: True if an existing archive with the same name was overwritten
         #: during creation.
         self.overwritten = False
         #: Holds error message if creation fails.
         self.errmsg = ""
+        #: Holds warning messages.
+        self.warnmsgs = []
         #----}
 
     def guess_name(self):
@@ -120,7 +126,7 @@ class ArcCreator:
             return
 
         # Create archive log file.
-        log_ts = arclib.format_ts(self.ts, "formatted")
+        log_ts = arclib.format_ts(self.ts, "expand")
         logdoc = adoclib.format_doc(self.name, self.logtxt, date=log_ts)
         self.logpath = os.path.join(os.path.abspath(self.outdir), self.logname)
         f = open(self.logpath, "w")
@@ -155,19 +161,20 @@ class ArcCreator:
 
         # Prepare output path.
         outname = self.format_outname()
-        arcpath = os.path.join(os.path.abspath(self.outdir), outname)
-        if os.path.exists(arcpath):
+        self.arcpath = os.path.join(os.path.abspath(self.outdir), outname)
+        if os.path.exists(self.arcpath):
             if not self.overwrite:
                 self.errmsg = "Archive with same name exists and overwrite flag is not set."
                 return False
             else:
+                os.remove(self.arcpath)
                 self.overwritten = True
 
         # Create archive.
         self._create_log()
-        self.arc = arclib.Archive(arcpath)
+        self.arc = arclib.Archive(self.arcpath)
         self.arc.create()
-        self.arctargets = arclib.convert_systargets(self.systargets, flatten=self.flatten)
+        self.arctargets, notfound = arclib.convert_sys2arc(self.systargets, flatten=self.flatten)
         if self.logpath:
             self.arctargets.append(arclib.ArcTarget(self.logpath, self.logname))
         for a in self.arctargets:
@@ -177,14 +184,21 @@ class ArcCreator:
                 self.notadded.append(a)
         self._delete_log()
 
-        # TODO: Could check notadded to prevent deleting files that were
-        # not archived.
+        # Delete added targets from the filesystem.
         notdel = []
         if self.delete:
-            notdel = arclib.delete_systargets(self.systargets)
+            notdel = arclib.delete_from_filesys(self.arctargets, self.notadded)
+
+        # Check for warnings during creation.
+        if notfound:
+            self.warnmsgs.append("Some system targets not found.")
+        if self.notadded:
+            self.warnmsgs.append("Some system targets not added to archive.")
+        if self.notdel:
+            self.warnmsgs.append("Some system targets not deleted as requested.")
 
         # Check that the archive file exists.
-        if not os.path.exists(arcpath):
+        if not os.path.exists(self.arcpath):
             self.errmsg = "Archive file could not be located."
             return False
         return True
@@ -194,16 +208,15 @@ class ArcCreator:
 ##==============================================================#
 
 if __name__ == '__main__':
-    a = ArcMgr()
+    a = ArcCreator()
     a.logtxt = "Just a test."
+    a.ts_style = "none"
+    a.overwrite = True
     # a.flatten = True
-    a.systargets.append("brainstorm.txt")
-    a.systargets.append("testdir")
-    a.systargets.append(r"C:\Python27\Tools")
-    # a.ts_style = "none"
-    # a.no_ts = True
-    # a.short_ts = True
-    # a.long_ts = True
+    a.systargets.append(r"testdir2\file.txt")
+    a.systargets.append(r"testdir2\subdir\file.txt")
     # a.delete = True
-    # print a.create_archive()
-    print a.format_name()
+    print a.create_archive()
+    print a.arcpath
+    print a.errmsg
+    print a.warnmsgs
