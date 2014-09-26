@@ -111,6 +111,12 @@ class MainWindow(wx.Frame):
         dlg.ShowModal()
         dlg.Destroy()
 
+    def show_error(self, caption, message):
+        """Shows a error dialog."""
+        dlg = wx.MessageDialog(self.parent, message, caption, wx.OK | wx.ICON_ERROR)
+        dlg.ShowModal()
+        dlg.Destroy()
+
 ##==============================================================#
 ## SECTION: Main Body                                           #
 ##==============================================================#
