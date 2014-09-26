@@ -56,7 +56,13 @@ class ArchiverApp(wx.App):
         self.arcctr.logtxt = panel.log_text.GetValue()
 
         # Create
-        self.arcctr.create_archive()
+        if not self.arcctr.create_archive():
+            self.mainwin.show_error(NAMEVER, "Archive could not be created!")
+        warning = ""
+        if self.arcctr.warnmsgs:
+            for w in self.arcctr.warnmsgs:
+                warning += "%s\n" % w
+            self.mainwin.show_warning(NAMEVER, warning)
         self.quit()
 
     def update_oname(self, event=None):
@@ -97,7 +103,7 @@ class ArchiverApp(wx.App):
         """Exit the application."""
         self.mainwin.Close()
 
-    def show_files_warn(self):
+    def show_notargets_warn(self):
         self.mainwin.show_warning(NAMEVER, "No targets provided.\nApplication will now close.")
         self.quit()
 
@@ -113,4 +119,4 @@ if __name__ == '__main__':
         app.run_loop()
     else:
         app.show_main(enabled=False)
-        app.show_files_warn()
+        app.show_notargets_warn()
