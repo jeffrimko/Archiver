@@ -186,9 +186,9 @@ class ArcCreator:
         self._delete_log()
 
         # Delete added targets from the filesystem.
-        notdel = []
+        self.notdel = []
         if self.delete:
-            notdel = arclib.delete_from_filesys(self.arctargets, self.notadded)
+            self.notdel = arclib.delete_from_filesys(self.arctargets, self.notadded)
 
         # Check for warnings during creation.
         if notfound:
