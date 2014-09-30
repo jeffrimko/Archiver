@@ -8,6 +8,7 @@
 ## SECTION: Imports                                             #
 ##==============================================================#
 
+import os
 import sys
 
 import wx
@@ -50,6 +51,9 @@ class ArchiverApp(wx.App):
     def create_archive(self, event=None):
         """Create the archive and quits the application."""
         panel = self.mainwin.mainpanel
+
+        # Set output directory based on targets.
+        self.arcctr.outdir = os.path.dirname(os.path.abspath(self.arcctr.systargets[0]))
 
         # Update ArcMgr from view.
         self.arcctr.delete = panel.del_cb.GetValue()
