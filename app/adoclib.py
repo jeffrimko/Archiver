@@ -21,10 +21,10 @@ def format_doc(title, body, date="", author=""):
     doc = "%s\n" % title
     doc += "".join(["=" for i in title])
     doc += "\n"
-    if date:
-        doc += ":date: %s\n" % date
     if author:
         doc += ":author: %s\n" % author
+    if date:
+        doc += ":date: %s\n" % date
     doc += "\n"
     doc += body
     return doc
@@ -34,4 +34,4 @@ def format_doc(title, body, date="", author=""):
 ##==============================================================#
 
 if __name__ == '__main__':
-    print format_doc("", "some test here\nmore text", author="jeff")
+    print format_doc("Hello world!", "some test here\nmore text")
