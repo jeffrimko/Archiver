@@ -1,8 +1,8 @@
-"""Utility for archiving files.
+"""Utility for archiving files and directories.
 
 An archive is simply a zip file containing the archived
-files plus an optional log file. The standard used for the
-log file is a text file named `__archive_info__.txt`.
+targets plus an optional log file. The standard used for
+the log file is a text file named `__archive_info__.txt`.
 The log is always in the root directory of the archive.
 
 By default, the archive filename will be prefixed with

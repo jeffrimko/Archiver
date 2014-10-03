@@ -1,4 +1,4 @@
-"""This script contains a base library for the Archiver project."""
+"""Base library for the Archiver project."""
 
 ##==============================================================#
 ## DEVELOPED 2014, REVISED 2014, Jeff Rimko.                    #

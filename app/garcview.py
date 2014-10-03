@@ -102,7 +102,7 @@ class MainWindow(wx.Frame):
             widget.Disable()
 
     def show(self):
-        """Shows the main windows."""
+        """Shows the main window."""
         self.Show(True)
 
     def show_warning(self, caption, message):

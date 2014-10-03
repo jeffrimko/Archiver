@@ -1,4 +1,7 @@
-"""FIXME..."""
+"""Graphical (GUI) utility for archiving files.
+
+Target files and directories are passes as arguments to this utility.
+"""
 
 ##==============================================================#
 ## COPYRIGHT 2014, REVISED 2014, Jeff Rimko.                    #

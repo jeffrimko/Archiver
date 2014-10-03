@@ -1,4 +1,4 @@
-"""This script contains application information for the Archiver utility."""
+"""Application information for the Archiver utility."""
 
 ##==============================================================#
 ## DEVELOPED 2014, REVISED 2014, Jeff Rimko.                    #
@@ -11,9 +11,9 @@
 #: Archiver application name.
 ARCHIVER_NAME = "Archiver"
 #: Archiver application version.
-ARCHIVER_VER = "1.2.0-alpha"
+ARCHIVER_VER = "1.1.0"
 
 #: Graphical Archiver application name.
 GARCHIVER_NAME = "gArchiver"
 #: Graphical Archiver application version.
-GARCHIVER_VER = "1.2.0-alpha"
+GARCHIVER_VER = "1.1.0"

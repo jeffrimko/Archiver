@@ -1,6 +1,4 @@
-"""This script contains objects that manage high-level operations on
-archives.
-"""
+"""Logic and objects that manages high-level operations on archives."""
 
 ##==============================================================#
 ## DEVELOPED 2014, REVISED 2014, Jeff Rimko.                    #
