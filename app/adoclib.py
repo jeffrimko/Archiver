@@ -16,11 +16,15 @@ def format_doc(title, body, date="", author=""):
     :param date: (str) Date stamp for the document.
     :param author: (str) Author of the document.
     """
-    doc = "= %s\n" % title
+    if not title:
+        title = "Untitled"
+    doc = "%s\n" % title
+    doc += "".join(["=" for i in title])
+    doc += "\n"
     if date:
         doc += ":date: %s\n" % date
     if author:
-        author += ":author: %s\n" % date
+        doc += ":author: %s\n" % author
     doc += "\n"
     doc += body
     return doc
@@ -30,4 +34,4 @@ def format_doc(title, body, date="", author=""):
 ##==============================================================#
 
 if __name__ == '__main__':
-    print format_doc("hello", "some test here\nmore text")
+    print format_doc("", "some test here\nmore text", author="jeff")
