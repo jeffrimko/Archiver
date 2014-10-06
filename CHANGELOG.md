@@ -1,7 +1,7 @@
 Archiver Changelog
 ==================
 
-## v1.1.0 (2014-05-25)
+## v1.1.0 (2014-10-06)
 ### Release highlights
   - In gArchiver, added output name preview field.
   - Minor improvements to directory archiving.
