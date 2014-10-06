@@ -1,4 +1,4 @@
-"""This script provides a library for working with Asciidoc markup."""
+"""A library for working with Asciidoc markup."""
 
 ##==============================================================#
 ## DEVELOPED 2014, REVISED 2014, Jeff Rimko.                    #
