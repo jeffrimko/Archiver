@@ -21,4 +21,4 @@ Windows binaries of the two utility variations are built using [PyInstaller](htt
 
 A demo of gArchiver in action is shown below:
 
-![gArchiver Demo](doc/demos/garchive_example.gif)
+![gArchiver Demo](doc/demos/garchive_demo.gif)
