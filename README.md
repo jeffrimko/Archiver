@@ -17,7 +17,7 @@ This application was written in Python. The command line utility uses the Docopt
   - [wxPython](http://wxpython.org/) 3.0.0.0 (gArchiver only)
   - [Docopt](https://github.com/docopt/docopt) 0.6.2 (Archiver only)
 
-Windows binaries of the two utility variations are built using [PyInstaller](http://www.pyinstaller.org/) 2.0; the binaries should be standalone and do not require any additional dependencies. To use the command line Archiver utility, simply add the `archiver.exe` file to a location accessible on the PATH. To use the GUI gArchiver utility, add a shortcut to the utility in the Windows Explorer "Send to" menu.
+Windows binaries of the two utility variations are built using [PyInstaller](http://www.pyinstaller.org/) 2.0; the binaries should be standalone and do not require any additional dependencies. To use the command line Archiver utility, simply add the `archiver.exe` file to a location accessible on the PATH. To use the GUI gArchiver utility, add a shortcut to `garchiver.exe` in the Windows Explorer "Send to" menu.
 
 A demo of gArchiver in action is shown below:
 
