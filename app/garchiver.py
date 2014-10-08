@@ -42,12 +42,12 @@ class ArchiverApp(wx.App):
         # Bind events to the methods containing the logic.
         self.Bind(wx.EVT_BUTTON, self.create_archive, panel.ok_button)
         self.Bind(wx.EVT_BUTTON, self.quit, panel.cancel_button)
-        self.Bind(wx.EVT_CHECKBOX, self.update_oname, panel.no_ts_cb)
-        self.Bind(wx.EVT_CHECKBOX, self.update_oname, panel.short_ts_cb)
-        self.Bind(wx.EVT_TEXT, self.update_oname, panel.name_text)
+        self.Bind(wx.EVT_CHECKBOX, self.update_ofile, panel.no_ts_cb)
+        self.Bind(wx.EVT_CHECKBOX, self.update_ofile, panel.short_ts_cb)
+        self.Bind(wx.EVT_TEXT, self.update_ofile, panel.name_text)
         self.Bind(wx.EVT_TEXT_ENTER, self.create_archive, panel.name_text)
         self.Bind(wx.EVT_TEXT_ENTER, self.create_archive, panel.log_text)
-        self.Bind(wx.EVT_TEXT_ENTER, self.create_archive, panel.oname_text)
+        self.Bind(wx.EVT_TEXT_ENTER, self.create_archive, panel.ofile_text)
 
         return True
 
@@ -55,10 +55,9 @@ class ArchiverApp(wx.App):
         """Create the archive and quits the application."""
         panel = self.mainwin.mainpanel
 
-        # Set output directory based on targets.
-        self.arcctr.outdir = os.path.dirname(os.path.abspath(self.arcctr.systargets[0]))
-
         # Update ArcMgr from view.
+        self.arcctr.outdir = panel.odir_text.GetValue()
+        self.arcctr.flatten = panel.flat_cb.GetValue()
         self.arcctr.delete = panel.del_cb.GetValue()
         self.arcctr.logtxt = panel.log_text.GetValue()
 
@@ -72,7 +71,7 @@ class ArchiverApp(wx.App):
             self.mainwin.show_warning(NAMEVER, warning)
         self.quit()
 
-    def update_oname(self, event=None):
+    def update_ofile(self, event=None):
         """Updates the output name TextCtrl on the main window."""
         panel = self.mainwin.mainpanel
 
@@ -87,7 +86,7 @@ class ArchiverApp(wx.App):
 
         # Set view output name.
         outname = self.arcctr.format_outname()
-        self.mainwin.mainpanel.oname_text.ChangeValue(outname)
+        self.mainwin.mainpanel.ofile_text.ChangeValue(outname)
 
     def update_name(self, event=None):
         """Updates the archive name TextCtrl on the main window."""
@@ -95,12 +94,17 @@ class ArchiverApp(wx.App):
             self.arcctr.guess_name()
         self.mainwin.mainpanel.name_text.SetValue(self.arcctr.name)
 
+    def guess_odir(self, event=None):
+        panel = self.mainwin.mainpanel
+        panel.odir_text.SetValue(os.path.dirname(os.path.abspath(self.arcctr.systargets[0])))
+
     def show_main(self, enabled=True):
         """Shows the main window."""
         if not enabled:
             self.mainwin.disable()
         self.update_name()
-        self.update_oname()
+        self.guess_odir()
+        self.update_ofile()
         self.mainwin.show()
 
     def run_loop(self):

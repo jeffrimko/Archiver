@@ -11,6 +11,15 @@
 import wx
 
 ##==============================================================#
+## SECTION: Global Definitions                                  #
+##==============================================================#
+
+#: Defines the minimum X size of the main window in pixels.
+MIN_X_SZ = 340
+#: Defines the main window border for various UI elements in pixels.
+WIN_BORDER = 20
+
+##==============================================================#
 ## SECTION: Class Definitions                                   #
 ##==============================================================#
 
@@ -26,60 +35,78 @@ class MainPanel(wx.Panel):
 
         # Create the Sizers used for this panel.
         main_sizer = wx.BoxSizer(wx.VERTICAL)
+        name_sizer = wx.BoxSizer(wx.VERTICAL)
+        ltxt_sizer = wx.BoxSizer(wx.VERTICAL)
         opts_sizer = wx.BoxSizer(wx.VERTICAL)
-        prev_sizer = wx.BoxSizer(wx.VERTICAL)
+        oprv_sizer = wx.BoxSizer(wx.VERTICAL)
         bttn_sizer = wx.BoxSizer(wx.HORIZONTAL)
 
         # Create text input for the archive name.
         name_label = wx.StaticText(self, label="Archive Name:")
         style = wx.TE_PROCESS_ENTER
-        self.name_text = wx.TextCtrl(self, size=(300,-1), style=style)
-
+        self.name_text = wx.TextCtrl(self, size=(-1,-1), style=style)
+        name_sizer.Add(name_label)
+        name_sizer.Add(self.name_text, flag=wx.EXPAND)
 
         # Create text input for the archive log.
         log_label = wx.StaticText(self, label="Log Text:")
-        style = wx.TE_MULTILINE | wx.TE_PROCESS_ENTER
-        self.log_text = wx.TextCtrl(self, size=(300,200), style=style)
+        style = wx.TE_MULTILINE | wx.TE_PROCESS_ENTER | wx.TE_RICH2
+        self.log_text = wx.TextCtrl(self, size=(-1,-1), style=style)
+        ltxt_sizer.Add(log_label)
+        ltxt_sizer.Add(self.log_text, 1, wx.EXPAND)
 
         # Create option check boxes and add to sizer.
         self.no_ts_cb = wx.CheckBox(self, -1,
                 "Do not include timestamp in archive name.")
         self.short_ts_cb = wx.CheckBox(self, -1,
                 "Only timestamp to the day (hour:min otherwise).")
+        self.flat_cb = wx.CheckBox(self, -1,
+                "Flatten archive file structure.")
         self.del_cb = wx.CheckBox(self, -1,
                 "Delete original files after archiving.")
-        opts_sizer.Add(self.no_ts_cb, 0)
-        opts_sizer.Add(self.short_ts_cb, 0, wx.TOP, 10)
-        opts_sizer.Add(self.del_cb, 0, wx.TOP, 10)
+        opts_sizer.Add(self.no_ts_cb)
+        opts_sizer.Add(self.short_ts_cb)
+        opts_sizer.Add(self.flat_cb)
+        opts_sizer.Add(self.del_cb)
 
         # Create output filename preview.
-        prev_label = wx.StaticText(self, label="Output File Name:")
-        self.oname_text = wx.TextCtrl(self, size=(300,-1))
+        ofile_label = wx.StaticText(self, label="Output File Name:")
+        style = wx.TE_READONLY
+        self.ofile_text = wx.TextCtrl(self, size=(-1,-1), style=style)
+        odir_label = wx.StaticText(self, label="Output Directory:")
+        self.odir_text = wx.TextCtrl(self, size=(-1,-1))
+        oprv_sizer.Add(ofile_label)
+        oprv_sizer.Add(self.ofile_text, flag=wx.EXPAND)
+        oprv_sizer.Add(odir_label)
+        oprv_sizer.Add(self.odir_text, flag=wx.EXPAND)
 
         # Create main control buttons and add to sizer.
         self.ok_button = wx.Button(self, wx.ID_OK)
         self.cancel_button = wx.Button(self, wx.ID_CANCEL)
-        bttn_sizer.Add(self.ok_button, 0, wx.LEFT, 30)
-        bttn_sizer.Add(self.cancel_button, 0, wx.LEFT, 90)
-
-        prev_sizer.Add(prev_label, 0, wx.LEFT, 20)
-        prev_sizer.Add(self.oname_text, 0, wx.LEFT, 20)
+        bttn_sizer.Add(self.ok_button, 1)
+        bttn_sizer.AddSpacer(WIN_BORDER)
+        bttn_sizer.Add(self.cancel_button, 1)
 
         # Add items to main sizer.
-        main_sizer.Add(name_label, 0, wx.TOP | wx.LEFT, 20)
-        main_sizer.Add(self.name_text, 0, wx.LEFT, 20)
-        main_sizer.Add(log_label, 0, wx.TOP | wx.LEFT, 20)
-        main_sizer.Add(self.log_text, 0, wx.LEFT | wx.BOTTOM, 20)
-        main_sizer.Add(opts_sizer, 0, wx.LEFT, 20)
-        main_sizer.Add(prev_sizer, 0, wx.TOP, 20)
-        main_sizer.Add(bttn_sizer, 0, wx.TOP | wx.LEFT, 20)
+        sflags = wx.TOP | wx.LEFT | wx.RIGHT | wx.EXPAND
+        main_sizer.Add(name_sizer, 0, sflags, WIN_BORDER)
+        main_sizer.Add(ltxt_sizer, 5, sflags, WIN_BORDER)
+        main_sizer.Add(opts_sizer, 0, sflags, WIN_BORDER)
+        main_sizer.Add(oprv_sizer, 0, sflags, WIN_BORDER)
+        main_sizer.Add(bttn_sizer, 1, sflags, WIN_BORDER)
+        main_sizer.AddSpacer(WIN_BORDER)
         self.SetSizerAndFit(main_sizer)
+
+        #: The dynamic X size of the main window based on UI elements.
+        self.dyn_x_size = main_sizer.GetSize()[0]
+        #: The dynamic Y size of the main window based on UI elements.
+        self.dyn_y_size = main_sizer.GetSize()[1]
 
         # This sets initial focus to the log text input.
         self.log_text.SetFocus()
 
 class MainWindow(wx.Frame):
-    """This class defines the main window."""
+    """The main window of the application."""
 
     def __init__(self, parent, title):
         """This function defines initialization logic of the main window."""
@@ -89,11 +116,16 @@ class MainWindow(wx.Frame):
         style = wx.DEFAULT_FRAME_STYLE
         style &= ~(wx.RESIZE_BORDER | wx.RESIZE_BOX | wx.MAXIMIZE_BOX)
         wx.Frame.__init__(self,
-                parent,
+                self.parent,
                 title=title,
-                size=(350, 540),
                 style=style)
         self.mainpanel = MainPanel(self)
+
+        # Set window size based on dynamically calculated size.
+        x = self.mainpanel.dyn_x_size
+        if x < MIN_X_SZ:
+            x = MIN_X_SZ
+        self.SetSize((x, self.mainpanel.dyn_y_size))
 
     def disable(self):
         """Disables (grays out) the main window."""
@@ -123,8 +155,8 @@ class MainWindow(wx.Frame):
 
 if __name__ == "__main__":
     app = wx.App(False)
-    frame = MainWindow(None, "%s %s" % ("debug", "debug"))
+    frame = MainWindow(None, "debug")
     frame.show()
-    # frame.disable()
     app.MainLoop()
+    # frame.disable()
     # frame.show_warning("Foo", "Bar")
