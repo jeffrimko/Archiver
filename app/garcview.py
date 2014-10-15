@@ -43,8 +43,7 @@ class MainPanel(wx.Panel):
 
         # Create text input for the archive name.
         name_label = wx.StaticText(self, label="Archive Name:")
-        style = wx.TE_PROCESS_ENTER
-        self.name_text = wx.TextCtrl(self, size=(-1,-1), style=style)
+        self.name_text = wx.TextCtrl(self, size=(-1,-1), style=wx.TE_PROCESS_ENTER)
         name_sizer.Add(name_label)
         name_sizer.Add(self.name_text, flag=wx.EXPAND)
 
@@ -69,16 +68,15 @@ class MainPanel(wx.Panel):
         opts_sizer.Add(self.flat_cb)
         opts_sizer.Add(self.del_cb)
 
-        # Create output filename preview.
-        ofile_label = wx.StaticText(self, label="Output File Name:")
-        style = wx.TE_READONLY
-        self.ofile_text = wx.TextCtrl(self, size=(-1,-1), style=style)
+        # Create output preview.
         odir_label = wx.StaticText(self, label="Output Directory:")
-        self.odir_text = wx.TextCtrl(self, size=(-1,-1))
-        oprv_sizer.Add(ofile_label)
-        oprv_sizer.Add(self.ofile_text, flag=wx.EXPAND)
+        self.odir_text = wx.TextCtrl(self, size=(-1,-1), style=wx.TE_PROCESS_ENTER)
+        ofile_label = wx.StaticText(self, label="Output File Name:")
+        self.ofile_text = wx.TextCtrl(self, size=(-1,-1), style=wx.TE_READONLY)
         oprv_sizer.Add(odir_label)
         oprv_sizer.Add(self.odir_text, flag=wx.EXPAND)
+        oprv_sizer.Add(ofile_label)
+        oprv_sizer.Add(self.ofile_text, flag=wx.EXPAND)
 
         # Create main control buttons and add to sizer.
         self.ok_button = wx.Button(self, wx.ID_OK)
