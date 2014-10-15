@@ -47,8 +47,7 @@ class ArchiverApp(wx.App):
         self.Bind(wx.EVT_TEXT, self.update_ofile, panel.name_text)
         self.Bind(wx.EVT_TEXT_ENTER, self.create_archive, panel.name_text)
         self.Bind(wx.EVT_TEXT_ENTER, self.create_archive, panel.log_text)
-        self.Bind(wx.EVT_TEXT_ENTER, self.create_archive, panel.ofile_text)
-
+        self.Bind(wx.EVT_TEXT_ENTER, self.create_archive, panel.odir_text)
         return True
 
     def create_archive(self, event=None):
@@ -95,8 +94,10 @@ class ArchiverApp(wx.App):
         self.mainwin.mainpanel.name_text.SetValue(self.arcctr.name)
 
     def guess_odir(self, event=None):
+        """Guess the output directory based on the system targets."""
         panel = self.mainwin.mainpanel
-        panel.odir_text.SetValue(os.path.dirname(os.path.abspath(self.arcctr.systargets[0])))
+        if self.arcctr.systargets:
+            panel.odir_text.SetValue(os.path.dirname(os.path.abspath(self.arcctr.systargets[0])))
 
     def show_main(self, enabled=True):
         """Shows the main window."""
