@@ -61,11 +61,14 @@ class MainPanel(wx.Panel):
                 "Only timestamp to the day (hour:min otherwise).")
         self.flat_cb = wx.CheckBox(self, -1,
                 "Flatten archive file structure.")
+        self.flatld_cb = wx.CheckBox(self, -1,
+                "Flatten leading directory.")
         self.del_cb = wx.CheckBox(self, -1,
                 "Delete original files after archiving.")
         opts_sizer.Add(self.no_ts_cb)
         opts_sizer.Add(self.short_ts_cb)
         opts_sizer.Add(self.flat_cb)
+        opts_sizer.Add(self.flatld_cb)
         opts_sizer.Add(self.del_cb)
 
         # Create output preview.
@@ -111,7 +114,7 @@ class MainWindow(wx.Frame):
         self.parent = parent
 
         # This style disables the ability to resize the window.
-        style = wx.DEFAULT_FRAME_STYLE
+        style = wx.DEFAULT_FRAME_STYLE | wx.WANTS_CHARS
         style &= ~(wx.RESIZE_BORDER | wx.RESIZE_BOX | wx.MAXIMIZE_BOX)
         wx.Frame.__init__(self,
                 self.parent,
@@ -154,6 +157,7 @@ class MainWindow(wx.Frame):
 if __name__ == "__main__":
     app = wx.App(False)
     frame = MainWindow(None, "debug")
+    frame.mainpanel.flatld_cb.Disable()
     frame.show()
     app.MainLoop()
     # frame.disable()

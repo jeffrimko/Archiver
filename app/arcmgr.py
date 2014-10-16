@@ -42,6 +42,9 @@ class ArcCreator:
         self.delete = False
         #: True if the directory structure should be flattened.
         self.flatten = False
+        #: True if the leading directory should be flattened; valid only if
+        #: there is one system target and it is a directory.
+        self.flatten_ld = False
         #: True if no log file should be created.
         self.no_log = False
         #: True if existing archive with same name should be overwritten.
@@ -172,7 +175,10 @@ class ArcCreator:
         self._create_log()
         self.arc = arclib.Archive(self.arcpath)
         self.arc.create()
-        self.arctargets, notfound = arclib.convert_sys2arc(self.systargets, flatten=self.flatten)
+        self.arctargets, notfound = arclib.convert_sys2arc(
+                self.systargets,
+                flatten=self.flatten,
+                flatten_ld=self.flatten_ld)
         if self.logpath:
             self.arctargets.append(arclib.ArcTarget(self.logpath, self.logname))
         # Iterate only through archive targets that have valid zip file paths.

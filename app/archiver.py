@@ -24,11 +24,12 @@ Options:
   -m LOGMSG         Archive log message.
   --outdir=OUTDIR   Directory to place generated files [default: .].
   --name=NAME       Archive name.
-  --no_timestamp    Do not include timestamp in archive name.
-  --short_timestamp Only timestamp to the day (hour:min otherwise).
-  --long_timestamp  Timestamp to the second (hour:min otherwise).
+  --no_ts           Do not include timestamp in archive name.
+  --short_ts        Only timestamp to the day (hour:min otherwise).
+  --long_ts         Timestamp to the second (hour:min otherwise).
   --delete          Delete original targets from file system after archiving.
   --flatten         Flatten directory structure in the zip archive.
+  --flatten_ld      Flatten leading directory; only if single directory target.
   -h --help         Show this help message and exit.
   --version         Show version and exit.
 """
@@ -72,14 +73,15 @@ def parse_args(args):
     arcctr.systargets = [os.path.abspath(t) for t in args['TARGET']]
     arcctr.name = args['--name']
     arcctr.logtxt = args['-m']
-    if args['--long_timestamp']:
+    if args['--long_ts']:
         arcctr.ts_style = "long"
-    elif args['--short_timestamp']:
+    elif args['--short_ts']:
         arcctr.ts_style = "short"
-    elif args['--no_timestamp']:
+    elif args['--no_ts']:
         arcctr.ts_style = "none"
     arcctr.delete = args['--delete']
     arcctr.flatten = args['--flatten']
+    arcctr.flatten_ld = args['--flatten_ld']
     arcctr.outdir = args['--outdir']
     return arcctr
 

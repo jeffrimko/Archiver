@@ -182,13 +182,16 @@ def delete_from_filesys(arctargets, ignore=[]):
 
     return notdel
 
-def convert_sys2arc(targets, flatten=False):
+def convert_sys2arc(targets, flatten=False, flatten_ld=True):
     """Converts list of system targets to equivalent archiver targets.
 
     :param targets: List of system targets.
     :param flatten: (bool) If true, the archiver targets will all be placed in
         the archive root. If false, the archive structure will reflect the
         system structure.
+    :param flatten_ld: (bool) If true, only the leading directory will be
+        flattened. This is only valid if there is one system target and it is a
+        directory.
 
     :Returns:
       - Tuple with the following:
@@ -211,11 +214,14 @@ def convert_sys2arc(targets, flatten=False):
     # will be used as the basis of the relative path that will be used for the
     # zip path.
     if 1 == len(targets) and os.path.isdir(targets[0]):
-        # NOTE: If only a single directory was provided as a system target, use
-        # the parent directory as the prefix. Otherwise, the given directory
-        # will be used for the prefix resulting in the child subs being in the
-        # archive root rather than the directory itself.
-        cpp = os.path.abspath(os.path.dirname(targets[0]))
+        if flatten_ld:
+            cpp = os.path.abspath(targets[0])
+        else:
+            # NOTE: If only a single directory was provided as a system target,
+            # use the parent directory as the prefix. Otherwise, the given
+            # directory will be used for the prefix resulting in the child subs
+            # being in the archive root rather than the directory itself.
+            cpp = os.path.abspath(os.path.dirname(targets[0]))
     else:
         cpp = os.path.dirname(os.path.commonprefix(sysexpand))
 
@@ -232,9 +238,16 @@ def convert_sys2arc(targets, flatten=False):
             # targets are separate drives.
             if not cpp:
                 a.zippath = os.path.splitdrive(a.syspath)[1]
+            elif cpp == s:
+                # If the system target is the same as the common path prefix
+                # typically this means that the flatten leading directory
+                # option was set. Therefore, do not add the target to the zip
+                # file (would result in a zip path of `.` anyways).
+                a.zippath = None
             else:
                 a.zippath = os.path.relpath(a.syspath, cpp)
         arctargets.append(a)
+
     return (arctargets, notfound)
 
 def expand_systarget(target, nofiles=False, nodirs=False):

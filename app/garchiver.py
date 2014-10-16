@@ -45,10 +45,16 @@ class ArchiverApp(wx.App):
         self.Bind(wx.EVT_CHECKBOX, self.update_ofile, panel.no_ts_cb)
         self.Bind(wx.EVT_CHECKBOX, self.update_ofile, panel.short_ts_cb)
         self.Bind(wx.EVT_TEXT, self.update_ofile, panel.name_text)
-        self.Bind(wx.EVT_TEXT_ENTER, self.create_archive, panel.name_text)
-        self.Bind(wx.EVT_TEXT_ENTER, self.create_archive, panel.log_text)
-        self.Bind(wx.EVT_TEXT_ENTER, self.create_archive, panel.odir_text)
+        self.Bind(wx.EVT_KEY_DOWN, self.handle_keydown)
         return True
+
+    def handle_keydown(self, event):
+        """Handles key down event."""
+        keycode = event.GetKeyCode()
+        if keycode == wx.WXK_RETURN and not event.AltDown() and not event.ControlDown():
+            self.create_archive()
+        else:
+            event.Skip()
 
     def create_archive(self, event=None):
         """Create the archive and quits the application."""
@@ -57,10 +63,11 @@ class ArchiverApp(wx.App):
         # Update ArcMgr from view.
         self.arcctr.outdir = panel.odir_text.GetValue()
         self.arcctr.flatten = panel.flat_cb.GetValue()
+        self.arcctr.flatten_ld = panel.flatld_cb.GetValue()
         self.arcctr.delete = panel.del_cb.GetValue()
         self.arcctr.logtxt = panel.log_text.GetValue()
 
-        # Create
+        # Create archive.
         if not self.arcctr.create_archive():
             self.mainwin.show_error(NAMEVER, "Archive could not be created!")
         warning = ""
@@ -127,6 +134,10 @@ if __name__ == '__main__':
     app = ArchiverApp()
     if len(sys.argv) >= 2:
         app.arcctr.systargets = sys.argv[1:]
+        if 1 == len(app.arcctr.systargets) and os.path.isdir(app.arcctr.systargets[0]):
+            pass
+        else:
+            app.mainwin.mainpanel.flatld_cb.Disable()
         app.show_main()
         app.run_loop()
     else:
