@@ -134,12 +134,17 @@ if __name__ == '__main__':
     app = ArchiverApp()
     if len(sys.argv) >= 2:
         app.arcctr.systargets = sys.argv[1:]
+
+        # Only enable flatten leading directory if there is one target and it is
+        # a directory.
         if 1 == len(app.arcctr.systargets) and os.path.isdir(app.arcctr.systargets[0]):
             pass
         else:
             app.mainwin.mainpanel.flatld_cb.Disable()
+
         app.show_main()
         app.run_loop()
+
     else:
         app.show_main(enabled=False)
         app.show_notargets_warn()
