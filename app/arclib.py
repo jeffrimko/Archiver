@@ -13,6 +13,7 @@ import os
 import shutil
 import time
 import zipfile
+from zipfile import ZIP_STORED, ZIP_DEFLATED
 
 ##==============================================================#
 ## SECTION: Global Definitions                                  #
@@ -43,7 +44,7 @@ class Archive:
         """
         return os.path.exists(self.path)
 
-    def create(self):
+    def create(self, compressed=True):
         """Creates the archive file on the filesystem.
 
         :Postconditions:
@@ -51,7 +52,10 @@ class Archive:
         """
         if self.exists():
             return
-        self.zfile = zipfile.ZipFile(self.path, "w")
+        compression = ZIP_STORED
+        if compressed:
+            compression = ZIP_DEFLATED
+        self.zfile = zipfile.ZipFile(self.path, "w", compression=compression)
 
     def contents(self):
         """Returns a list of archive contents."""
