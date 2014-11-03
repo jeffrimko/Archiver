@@ -1,9 +1,9 @@
 :: Builds a Windows EXE from the Python scripts.
 :: **Dependencies**:
-:: PyInstaller must have a wrapper batch file on the PATH.
+:: PyInstaller must be installed and on the PATH.
 
 ::=============================================================::
-:: COPYRIGHT 2013, REVISED 2013, Jeff Rimko.                   ::
+:: DEVELOPED 2013, REVISED 2013, Jeff Rimko.                   ::
 ::=============================================================::
 
 :: Set up environment.
@@ -22,8 +22,10 @@ set OUTDIR=__output__
 ::=============================================================::
 
 mkdir %OUTDIR% 2>NUL
-call pyinstaller --out=%OUTDIR% --name=archiver --onefile --console archiver.py
-call pyinstaller --out=%OUTDIR% --name=garchiver --onefile --windowed garchiver.py
-mv *.log %OUTDIR%
+call pyinstaller --specpath=%OUTDIR% --name=archiver --onefile --console archiver.py
+call pyinstaller --specpath=%OUTDIR% --name=garchiver --onefile --windowed garchiver.py
+mv build %OUTDIR% 2>NUL
+mv dist %OUTDIR% 2>NUL
+mv *.log %OUTDIR% 2>NUL
 pause
 exit /b 0
