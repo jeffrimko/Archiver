@@ -22,3 +22,5 @@ Windows binaries of the two utility variations are built using [PyInstaller](htt
 A demo of gArchiver in action is shown below:
 
 ![gArchiver Demo](doc/demos/garchiver_demo.gif)
+
+Additional details on this project are available at [jeffcomput.es/projects/archiver](http://jeffcomput.es/projects/archiver).
