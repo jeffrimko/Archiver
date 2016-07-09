@@ -158,7 +158,7 @@ if __name__ == "__main__":
     app = wx.App(False)
     frame = MainWindow(None, "debug")
     frame.mainpanel.flatld_cb.Disable()
+    frame.disable()
     frame.show()
     app.MainLoop()
-    # frame.disable()
     # frame.show_warning("Foo", "Bar")

@@ -20,7 +20,7 @@ from zipfile import ZIP_STORED, ZIP_DEFLATED
 ##==============================================================#
 
 #: Default filename for the archive log.
-DEFAULT_LOGNAME = "__archive_info__.txt"
+LOGNAME = "__arc_info__.txt"
 
 ##==============================================================#
 ## SECTION: Class Definitions                                   #
@@ -74,8 +74,8 @@ class Archive:
 
         log = ""
         c = self.contents()
-        if DEFAULT_LOGNAME in c:
-            log = DEFAULT_LOGNAME
+        if LOGNAME in c:
+            log = LOGNAME
         elif base_txt in c:
             log = base_txt
         elif base_log in c:

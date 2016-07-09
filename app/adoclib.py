@@ -5,12 +5,17 @@
 ##==============================================================#
 
 ##==============================================================#
+## SECTION: Imports                                             #
+##==============================================================#
+
+import datetime
+
+##==============================================================#
 ## SECTION: Function Definitions                                #
 ##==============================================================#
 
-def format_doc(title, body, date="", author=""):
+def format_doc(title, body, date="", author="", add_date=False):
     """Formats the document text as Asciidoc.
-
     :param title: (str) Title of the document.
     :param body: (str) Body of the document.
     :param date: (str) Date stamp for the document.
@@ -18,12 +23,12 @@ def format_doc(title, body, date="", author=""):
     """
     if not title:
         title = "Untitled"
-    doc = "%s\n" % title
-    doc += "".join(["=" for i in title])
-    doc += "\n"
+    doc = "= %s\n" % title
     if author:
         doc += ":author: %s\n" % author
-    if date:
+    if date or add_date:
+        if add_date and not date:
+            date = datetime.datetime.now().strftime("%d %B %Y").lstrip("0")
         doc += ":date: %s\n" % date
     doc += "\n"
     doc += body
@@ -34,4 +39,4 @@ def format_doc(title, body, date="", author=""):
 ##==============================================================#
 
 if __name__ == '__main__':
-    print format_doc("Hello world!", "some test here\nmore text")
+    print format_doc("Hello world!", "some test here\nmore text", add_date=True)

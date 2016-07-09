@@ -1,5 +1,27 @@
-Archiver Changelog
-==================
+# Archiver Changelog
+
+## archiver-1.2.0 (2016-07-09)
+### Release highlights
+  - Archive info files now use filename `__arc_info__.txt` instead of `__archive_info__.txt`.
+  - Archive info title header no longer use Setext style.
+
+### All additions and changes
+Not applicable.
+
+### Bug fixes
+Not applicable.
+
+## garchiver-1.3.0 (2016-07-09)
+### Release highlights
+  - Archive info files now use filename `__arc_info__.txt` instead of `__archive_info__.txt`.
+  - Archive info title header no longer use Setext style.
+
+### All additions and changes
+Not applicable.
+
+### Bug fixes
+Not applicable.
+
 ## garchiver-1.2.0 (2014-11-02)
 ### Release highlights
   - Added ability to flatten leading file.

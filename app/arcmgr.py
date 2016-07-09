@@ -33,7 +33,7 @@ class ArcCreator:
         self.logtxt = ""       #: Text for log.
         self.name = ""         #: Name of the archive.
         self.outdir = "."      #: Output directory for the archive.
-        self.logname = "__archive_info__.txt"  #: Filename of log.
+        self.logname = arclib.LOGNAME  #: Filename of log.
 
         #: The archive filename timestamp style.
         self.ts_style = "normal"
@@ -130,8 +130,8 @@ class ArcCreator:
         log_ts = arclib.format_ts(self.ts, "expand")
         logdoc = adoclib.format_doc(self.name, self.logtxt, date=log_ts)
         self.logpath = os.path.join(os.path.abspath(self.outdir), self.logname)
-        f = open(self.logpath, "w")
-        f.write(logdoc)
+        with open(self.logpath, "w") as fo:
+            fo.write(logdoc + "\n")
 
     def _delete_log(self):
         """Deletes the previously created log file.

@@ -11,9 +11,9 @@
 #: Archiver application name.
 ARCHIVER_NAME = "Archiver"
 #: Archiver application version.
-ARCHIVER_VER = "1.1.0"
+ARCHIVER_VER = "1.2.0"
 
 #: Graphical Archiver application name.
 GARCHIVER_NAME = "gArchiver"
 #: Graphical Archiver application version.
-GARCHIVER_VER = "1.2.0"
+GARCHIVER_VER = "1.3.0"
