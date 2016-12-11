@@ -1,4 +1,4 @@
-# Archiver
+# ![Archiver](doc\logo\archiver.png)
 
 ## Introduction
 Utility for archiving files. An archive consists of a zip file containing the archived files and directories plus an optional information log file named `__arc_info__.txt` (please note older versions used the file name `__archive_info__.txt`).
