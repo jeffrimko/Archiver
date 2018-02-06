@@ -132,6 +132,7 @@ class ArchiverApp(wx.App):
 
 if __name__ == '__main__':
     app = ArchiverApp()
+    print(sys.argv)
     if len(sys.argv) >= 2:
         app.arcctr.systargets = sys.argv[1:]
 

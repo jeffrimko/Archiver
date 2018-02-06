@@ -115,7 +115,7 @@ class MainWindow(wx.Frame):
 
         # This style disables the ability to resize the window.
         style = wx.DEFAULT_FRAME_STYLE | wx.WANTS_CHARS
-        style &= ~(wx.RESIZE_BORDER | wx.RESIZE_BOX | wx.MAXIMIZE_BOX)
+        style &= ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX)
         wx.Frame.__init__(self,
                 self.parent,
                 title=title,

@@ -283,4 +283,4 @@ def expand_systarget(target, nofiles=False, nodirs=False):
 ##==============================================================#
 
 if __name__ == '__main__':
-    print expand_systarget("testdir2")
+    print(expand_systarget("testdir2"))

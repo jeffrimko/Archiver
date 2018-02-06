@@ -39,4 +39,4 @@ def format_doc(title, body, date="", author="", add_date=False):
 ##==============================================================#
 
 if __name__ == '__main__':
-    print format_doc("Hello world!", "some test here\nmore text", add_date=True)
+    print(format_doc("Hello world!", "some test here\nmore text", add_date=True))

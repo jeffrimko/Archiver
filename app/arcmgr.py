@@ -221,7 +221,7 @@ if __name__ == '__main__':
     a.systargets.append(r"testdir2\file.txt")
     a.systargets.append(r"testdir2\subdir\file.txt")
     # a.delete = True
-    print a.create_archive()
-    print a.arcpath
-    print a.errmsg
-    print a.warnmsgs
+    print(a.create_archive())
+    print(a.arcpath)
+    print(a.errmsg)
+    print(a.warnmsgs)
