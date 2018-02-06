@@ -44,8 +44,10 @@ class MainPanel(wx.Panel):
         # Create text input for the archive name.
         name_label = wx.StaticText(self, label="Archive Name:")
         self.name_text = wx.TextCtrl(self, size=(-1,-1), style=wx.TE_PROCESS_ENTER)
+        self.name_func = wx.ComboBox(self, value="", choices=["original", "lower_case"])
         name_sizer.Add(name_label)
         name_sizer.Add(self.name_text, flag=wx.EXPAND)
+        name_sizer.Add(self.name_func)
 
         # Create text input for the archive log.
         log_label = wx.StaticText(self, label="Log Text:")
