@@ -14,5 +14,8 @@
 ::=============================================================::
 
 rd /S /Q __output__
+rd /S /Q __pycache__
+rd /S /Q dist
+rd /S /Q build
 del /S /Q *.log
 del /S /Q *.pyc
