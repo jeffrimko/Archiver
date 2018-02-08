@@ -19,7 +19,10 @@ This application was written in Python. The CLI utility uses the Docopt library.
   - [Docopt](https://github.com/docopt/docopt) 0.6.2 (Archiver only)
 
 ## Installation
-Windows binaries of the two utility variations are built using [PyInstaller](http://www.pyinstaller.org/) 2.0; the binaries should be standalone and do not require any additional dependencies. To use the CLI Archiver utility, simply add the `archiver.exe` file to a location accessible on the PATH. To use the GUI gArchiver utility, add a shortcut to `garchiver.exe` to the `shell:sendto` directory which will add the utility to the Windows Explorer "Send to" menu.
+Windows binaries of the two utility variations are built using [PyInstaller](http://www.pyinstaller.org/) 3.x; the binaries should be standalone and do not require any additional dependencies.
+
+  - To use the CLI Archiver utility, simply add the `archiver.exe` file to a location accessible on the PATH.
+  - To use the GUI gArchiver utility, add a shortcut to `garchiver.exe` to the `shell:sendto` directory which will add the utility to the Windows Explorer "Send to" menu.
 
 ## Usage
 For more information on how to use the CLI utility, run `archiver --help` in a command prompt. The simplest example usage is `archiver myfile.txt`.
