@@ -27,6 +27,13 @@ from appinfo import GARCHIVER_NAME, GARCHIVER_VER
 #: Combined application name and version string.
 NAMEVER = "%s %s" % (GARCHIVER_NAME, GARCHIVER_VER)
 
+CASELABEL = "Update Name Case"
+NAMECASE = {
+        "lower_case": lambda x: x.lower().replace(" ", "_").replace("-", "_"),
+        "UPPER_CASE": lambda x: x.upper().replace(" ", "_").replace("-", "_"),
+        "spinal-case": lambda x: x.lower().replace(" ", "-").replace("_", "-"),
+    }
+
 ##==============================================================#
 ## SECTION: Class Definitions                                   #
 ##==============================================================#
@@ -34,17 +41,19 @@ NAMEVER = "%s %s" % (GARCHIVER_NAME, GARCHIVER_VER)
 class ArchiverApp(wx.App):
     def OnInit(self):
         self.arcctr = arcmgr.ArcCreator()
-        self.mainwin = garcview.MainWindow(None, NAMEVER)
+        cases = [CASELABEL] + list(NAMECASE.keys())
+        self.mainwin = garcview.MainWindow(None, NAMEVER, cases)
 
         # Local alias for main panel.
-        panel = self.mainwin.mainpanel
+        self.panel = self.mainwin.mainpanel
 
         # Bind events to the methods containing the logic.
-        self.Bind(wx.EVT_BUTTON, self.create_archive, panel.ok_button)
-        self.Bind(wx.EVT_BUTTON, self.quit, panel.cancel_button)
-        self.Bind(wx.EVT_CHECKBOX, self.update_ofile, panel.no_ts_cb)
-        self.Bind(wx.EVT_CHECKBOX, self.update_ofile, panel.short_ts_cb)
-        self.Bind(wx.EVT_TEXT, self.update_ofile, panel.name_text)
+        self.Bind(wx.EVT_BUTTON, self.create_archive, self.panel.ok_button)
+        self.Bind(wx.EVT_BUTTON, self.quit, self.panel.cancel_button)
+        self.Bind(wx.EVT_CHECKBOX, self.update_ofile, self.panel.no_ts_cb)
+        self.Bind(wx.EVT_CHECKBOX, self.update_ofile, self.panel.short_ts_cb)
+        self.Bind(wx.EVT_TEXT, self.update_ofile, self.panel.name_text)
+        self.Bind(wx.EVT_COMBOBOX, self.update_case, self.panel.name_cbox)
         self.Bind(wx.EVT_KEY_DOWN, self.handle_keydown)
         return True
 
@@ -58,14 +67,12 @@ class ArchiverApp(wx.App):
 
     def create_archive(self, event=None):
         """Create the archive and quits the application."""
-        panel = self.mainwin.mainpanel
-
         # Update ArcMgr from view.
-        self.arcctr.outdir = panel.odir_text.GetValue()
-        self.arcctr.flatten = panel.flat_cb.GetValue()
-        self.arcctr.flatten_ld = panel.flatld_cb.GetValue()
-        self.arcctr.delete = panel.del_cb.GetValue()
-        self.arcctr.logtxt = panel.log_text.GetValue()
+        self.arcctr.outdir = self.panel.odir_text.GetValue()
+        self.arcctr.flatten = self.panel.flat_cb.GetValue()
+        self.arcctr.flatten_ld = self.panel.flatld_cb.GetValue()
+        self.arcctr.delete = self.panel.del_cb.GetValue()
+        self.arcctr.logtxt = self.panel.log_text.GetValue()
 
         # Create archive.
         if not self.arcctr.create_archive():
@@ -79,32 +86,38 @@ class ArchiverApp(wx.App):
 
     def update_ofile(self, event=None):
         """Updates the output name TextCtrl on the main window."""
-        panel = self.mainwin.mainpanel
-
         # Update ArcMgr from view.
-        if panel.no_ts_cb.GetValue():
+        if self.panel.no_ts_cb.GetValue():
             self.arcctr.ts_style = "none"
-        elif panel.short_ts_cb.GetValue():
+        elif self.panel.short_ts_cb.GetValue():
             self.arcctr.ts_style = "short"
         else:
             self.arcctr.ts_style = "normal"
-        self.arcctr.name = panel.name_text.GetValue()
+        self.arcctr.name = self.panel.name_text.GetValue()
 
         # Set view output name.
         outname = self.arcctr.format_outname()
-        self.mainwin.mainpanel.ofile_text.ChangeValue(outname)
+        self.panel.ofile_text.ChangeValue(outname)
+
+    def update_case(self, event=None):
+        """Updates the case of the archive name."""
+        sel = self.panel.name_cbox.GetStringSelection()
+        name = self.panel.name_text.GetValue()
+        if sel in NAMECASE.keys():
+            name = NAMECASE[sel](name)
+        self.panel.name_text.SetValue(name)
+        self.panel.name_cbox.SetValue(CASELABEL)
 
     def update_name(self, event=None):
         """Updates the archive name TextCtrl on the main window."""
         if not self.arcctr.name:
             self.arcctr.guess_name()
-        self.mainwin.mainpanel.name_text.SetValue(self.arcctr.name)
+        self.panel.name_text.SetValue(self.arcctr.name)
 
     def guess_odir(self, event=None):
         """Guess the output directory based on the system targets."""
-        panel = self.mainwin.mainpanel
         if self.arcctr.systargets:
-            panel.odir_text.SetValue(os.path.dirname(os.path.abspath(self.arcctr.systargets[0])))
+            self.panel.odir_text.SetValue(os.path.dirname(os.path.abspath(self.arcctr.systargets[0])))
 
     def show_main(self, enabled=True):
         """Shows the main window."""

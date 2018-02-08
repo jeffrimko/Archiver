@@ -26,7 +26,7 @@ WIN_BORDER = 20
 class MainPanel(wx.Panel):
     """This class defines the main panel."""
 
-    def __init__(self, parent):
+    def __init__(self, parent, cases=[]):
         """This function defines initialization logic of the main panel."""
         wx.Panel.__init__(self, parent)
 
@@ -44,10 +44,10 @@ class MainPanel(wx.Panel):
         # Create text input for the archive name.
         name_label = wx.StaticText(self, label="Archive Name:")
         self.name_text = wx.TextCtrl(self, size=(-1,-1), style=wx.TE_PROCESS_ENTER)
-        self.name_func = wx.ComboBox(self, value="", choices=["original", "lower_case"])
+        self.name_cbox = wx.ComboBox(self, value=cases[0], choices=cases, style=wx.CB_READONLY)
         name_sizer.Add(name_label)
         name_sizer.Add(self.name_text, flag=wx.EXPAND)
-        name_sizer.Add(self.name_func)
+        name_sizer.Add(self.name_cbox, flag=wx.EXPAND)
 
         # Create text input for the archive log.
         log_label = wx.StaticText(self, label="Log Text:")
@@ -111,7 +111,7 @@ class MainPanel(wx.Panel):
 class MainWindow(wx.Frame):
     """The main window of the application."""
 
-    def __init__(self, parent, title):
+    def __init__(self, parent, title, cases=[]):
         """This function defines initialization logic of the main window."""
         self.parent = parent
 
@@ -122,7 +122,7 @@ class MainWindow(wx.Frame):
                 self.parent,
                 title=title,
                 style=style)
-        self.mainpanel = MainPanel(self)
+        self.mainpanel = MainPanel(self, cases)
 
         # Set window size based on dynamically calculated size.
         x = self.mainpanel.dyn_x_size
