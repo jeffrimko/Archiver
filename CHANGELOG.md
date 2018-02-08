@@ -1,5 +1,15 @@
 # Archiver Changelog
 
+## garchiver-1.4.0 (2018-02-07)
+### Release highlights
+  - Added functionality to quickly change casing of archive title.
+
+### All additions and changes
+Not applicable.
+
+### Bug fixes
+Not applicable.
+
 ## archiver-1.2.0 (2016-07-09)
 ### Release highlights
   - Archive info files now use filename `__arc_info__.txt` instead of `__archive_info__.txt`.
