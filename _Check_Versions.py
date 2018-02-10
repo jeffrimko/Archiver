@@ -34,5 +34,5 @@ if __name__ == '__main__':
     menu = qprompt.Menu()
     menu.add("c", "CLI version", CLI.prompt)
     menu.add("g", "GUI version", GUI.prompt)
-    menu.add("s", "show all versions", show)
+    menu.add("a", "show all versions", show)
     menu.main(loop=True)

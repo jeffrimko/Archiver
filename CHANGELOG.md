@@ -1,5 +1,16 @@
 # Archiver Changelog
 
+## garchiver-1.4.1 (2018-02-10)
+### Release highlights
+  - Added waiting prompt when creating archive.
+
+### All additions and changes
+Not applicable.
+
+### Bug fixes
+Not applicable.
+
+
 ## garchiver-1.4.0 (2018-02-07)
 ### Release highlights
   - Added functionality to quickly change casing of archive title.
