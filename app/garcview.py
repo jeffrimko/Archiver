@@ -44,6 +44,7 @@ class MainPanel(wx.Panel):
         # Create text input for the archive name.
         name_label = wx.StaticText(self, label="Archive Name:")
         self.name_text = wx.TextCtrl(self, size=(-1,-1), style=wx.TE_PROCESS_ENTER)
+        cases = cases or [""]
         self.name_cbox = wx.ComboBox(self, value=cases[0], choices=cases, style=wx.CB_READONLY)
         name_sizer.Add(name_label)
         name_sizer.Add(self.name_text, flag=wx.EXPAND)
@@ -160,7 +161,5 @@ if __name__ == "__main__":
     app = wx.App(False)
     frame = MainWindow(None, "debug")
     frame.mainpanel.flatld_cb.Disable()
-    frame.disable()
     frame.show()
     app.MainLoop()
-    # frame.show_warning("Foo", "Bar")

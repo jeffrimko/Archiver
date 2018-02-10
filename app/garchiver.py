@@ -75,6 +75,8 @@ class ArchiverApp(wx.App):
         self.arcctr.logtxt = self.panel.log_text.GetValue()
 
         # Create archive.
+        self.mainwin.disable()
+        wait = wx.BusyInfo("Creating archive, please wait...")
         if not self.arcctr.create_archive():
             self.mainwin.show_error(NAMEVER, "Archive could not be created!")
         warning = ""
@@ -145,7 +147,6 @@ class ArchiverApp(wx.App):
 
 if __name__ == '__main__':
     app = ArchiverApp()
-    print(sys.argv)
     if len(sys.argv) >= 2:
         app.arcctr.systargets = sys.argv[1:]
 
