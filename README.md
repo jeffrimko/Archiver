@@ -35,6 +35,6 @@ Log comments are saved in the `__arc_info__.txt` file located in the top-level o
 
 Timestamps are appended to the beginning of the archive filename and separated by a hyphen. The default timestamp format is *YYYYMMDDhhmm*.
 
-## FAQ
+## Q&A
 ### Who is this project for?
 Anyone that could use a method of quickly archiving files while adding some optional notes. Received a document via email? Create an archive and include the sender's information in the log!
